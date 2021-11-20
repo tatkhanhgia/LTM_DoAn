@@ -2,7 +2,6 @@ package View;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -14,9 +13,10 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
+import Controller.Controller_Client_SearchPhim;
 
 public class GUI_Client_Search extends JFrame {
-
+	
 	private JPanel contentPane;
 	private JTextField textField;
 	private JTextField textField_1;
@@ -24,6 +24,8 @@ public class GUI_Client_Search extends JFrame {
 	private JTextField textField_3;
 	private JTextField textField_4;
 
+	private Controller_Client_SearchPhim controller = new Controller_Client_SearchPhim();
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
