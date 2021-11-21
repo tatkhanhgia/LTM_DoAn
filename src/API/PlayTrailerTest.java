@@ -1,45 +1,44 @@
 package API;
 
-import com.sun.jna.Native;
-import com.sun.jna.NativeLibrary;
-import uk.co.caprica.vlcj.binding.LibVlc;
-import uk.co.caprica.vlcj.player.MediaPlayerFactory;
-import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
-import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
-import uk.co.caprica.vlcj.runtime.RuntimeUtil;
+import chrriis.dj.nativeswing.swtimpl.NativeInterface;
+import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class PlayTrailerTest {
     public static void main(String[] args) {
-        JFrame f = new JFrame();
-        f.setLocation(100, 100);
-        f.setSize(1000, 600);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setVisible(true);
+        NativeInterface.open();
 
-        Canvas c = new Canvas();
-        c.setBackground(Color.black);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                JFrame f = new JFrame("Youtube Video");
+                f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                f.getContentPane().add(getBrowser(), BorderLayout.CENTER);
+                f.setSize(700, 1000);
+                f.setVisible(true);
+            }
+        });
 
-        JPanel p = new JPanel();
-        p.setLayout(new BorderLayout());
+        NativeInterface.runEventPump();
 
-        p.add(c);
-        f.add(p);
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                NativeInterface.close();
+            }
+        }));
 
-        NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "D:\\VLC");
-        Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+    }
 
-        MediaPlayerFactory mpf = new MediaPlayerFactory();
-        EmbeddedMediaPlayer emp = mpf.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(f));
-        emp.setVideoSurface(mpf.newVideoSurface(c));
-        emp.setFullScreen(false);
-        emp.setEnableKeyInputHandling(false);
-        emp.setEnableMouseInputHandling(false);
+    public static JPanel getBrowser() {
+        JPanel wbPanel = new JPanel(new BorderLayout());
+        JWebBrowser wb = new JWebBrowser();
+        wbPanel.add(wb, BorderLayout.CENTER);
+        wb.setBarsVisible(false);
+        wb.navigate("https://www.youtube.com/watch?v=KlyknsTJk0w");
 
-        String file = "src/VideoTrailer/MORBIUS - Official Trailer (HD).mp4";
-        emp.prepareMedia(file);
-        emp.play();
+        return wbPanel;
     }
 }
