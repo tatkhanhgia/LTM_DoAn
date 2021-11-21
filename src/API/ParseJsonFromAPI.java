@@ -305,13 +305,97 @@ public class ParseJsonFromAPI {
         return resultAll;
     }
 
+    public ArrayList<String> getPopularMovie() {
+        ArrayList<String> resultAll = new ArrayList<String>();
+        HttpURLConnection connection = null;
+        try {
+            URL url = new URL("https://api.themoviedb.org/3/movie/popular?api_key=" + myKey + "&language=en-US" + "&page=" + "1");
+
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setDoInput(true);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+            String line = null;
+            StringBuilder response = new StringBuilder();
+
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+                response.append("\r\n");
+            }
+
+            String result = response.toString();
+            JSONObject object = new JSONObject(result);
+
+            JSONArray results = object.getJSONArray("results");
+            for (int i = 0; i < results.length(); i++) {
+                JSONObject childOfResults = results.getJSONObject(i);
+                String id = childOfResults.getString("id");
+                String title = childOfResults.getString("title");
+                String overview = childOfResults.getString("overview");
+                String release_date = childOfResults.getString("release_date");
+                String original_language = childOfResults.getString("original_language");
+                String popularity = childOfResults.getString("popularity");
+                String vote_average = childOfResults.getString("vote_average");
+                String vote_count = childOfResults.getString("vote_count");
+
+                String backdrop_path = childOfResults.getString("backdrop_path");
+                String poster_path = childOfResults.getString("poster_path");
+
+                resultAll.add(id);
+                resultAll.add(title);
+//                resultAll.add(overview);
+//                resultAll.add(release_date);
+//                resultAll.add(original_language);
+//                resultAll.add(popularity);
+//                resultAll.add(vote_average);
+//                resultAll.add(vote_count);
+//                resultAll.add(backdrop_path);
+//                resultAll.add(poster_path);
+            }
+            reader.close();
+        }
+        catch (MalformedURLException e) {
+            System.err.println(e.getMessage());
+        }
+        catch (JSONException e) {
+            System.err.println(e.getMessage());
+        }
+        catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+        return resultAll;
+    }
+
     public ParseJsonFromAPI() {
         String input = "tenet";
-        ArrayList<JFrame> movies = new ArrayList<JFrame>();
-        movies = playTrailerFromBrowser(input);
-        for (int i = 0; i < movies.size(); i++) {
+        ArrayList<String> movies = new ArrayList<String>();
+        ArrayList<Image> posterOfMovies = new ArrayList<Image>();
+        movies = getPopularMovie();
+
+        int i = 0;
+        while (i < movies.size()) {
             System.out.println(movies.get(i));
+            i++;
+            posterOfMovies = getPosterImage(movies.get(i++));
         }
+
+        //            Display poster image
+        for (int j = 0; j < posterOfMovies.size(); j++) {
+            JFrame frame = new JFrame();
+            frame.setSize(500, 300);
+            JLabel label = new JLabel(new ImageIcon(posterOfMovies.get(j)));
+            frame.add(label);
+            frame.setVisible(true);
+        }
+
+//        Test show video trailer
+//        ArrayList<JFrame> movies = new ArrayList<JFrame>();
+//        movies = playTrailerFromBrowser(input);
+//        for (int i = 0; i < movies.size(); i++) {
+//            System.out.println(movies.get(i));
+//        }
 
 //        Test show poster image
 //        ArrayList<Image> movies = new ArrayList<Image>();
