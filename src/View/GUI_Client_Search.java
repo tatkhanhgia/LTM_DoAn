@@ -4,34 +4,51 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import Controller.Controller_Client_SearchPhim;
+import de.javasoft.synthetica.dark.SyntheticaDarkLookAndFeel;
 
 public class GUI_Client_Search extends JFrame {
 	
-	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
-
+	private JPanel       contentPane;
+	private JTextField   textField;
+	private JTextField   textField_1;
+	private JTextField   textField_2;
+	private JTextField   textField_3;
+	private JTextField   textField_4;	
 	private Controller_Client_SearchPhim controller = new Controller_Client_SearchPhim();
 	
 	public static void main(String[] args) {
+		try
+		{
+			UIManager.setLookAndFeel(new SyntheticaDarkLookAndFeel());
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		javax.swing.SwingUtilities.invokeLater(new Runnable()
+		{
+			public void run()
+			{
+				JFrame.setDefaultLookAndFeelDecorated(true);
+			}
+		});
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					GUI_Client_Search frame = new GUI_Client_Search();
-					frame.setVisible(true);
+					frame.setVisible(true);					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -40,7 +57,7 @@ public class GUI_Client_Search extends JFrame {
 	}
 
 	public GUI_Client_Search() {
-		setTitle("\u1EE8NG D\u1EE4NG SEARCH PHIM & X\u1EEC L\u00DD \u1EA2NH");
+		setTitle("\u1EE8NG D\u1EE4NG SEARCH PHIM");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1101, 668);
 		contentPane = new JPanel();
