@@ -14,6 +14,8 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +29,7 @@ import de.javasoft.synthetica.dark.SyntheticaDarkLookAndFeel;
 
 
 
-public class View_Tong extends JFrame {
+public class Frame_Loading extends JFrame {
 	
 	private JPanel contentPane;	
 	private JTextField textField;
@@ -36,7 +38,7 @@ public class View_Tong extends JFrame {
 	private JTextField textField_3;
 	private JTextField textField_4;
 	private JFrame		frame_progress;
-	private  JProgressBar progress_bar;	
+	private JProgressBar progress_bar;	
 	
 	public static void main(String[] args) {
 		try
@@ -57,7 +59,7 @@ public class View_Tong extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					View_Tong frame = new View_Tong();
+					Frame_Loading frame = new Frame_Loading();
 					frame.setVisible(true);
 					frame.run_progressbar();
 				} catch (Exception e) {
@@ -67,14 +69,18 @@ public class View_Tong extends JFrame {
 		});
 	}
 
-	public View_Tong() throws IOException {
+	public Frame_Loading() throws IOException {
 		setTitle("\u1EE8NG D\u1EE4NG SEARCH PHIM & X\u1EEC L\u00DD \u1EA2NH");
 		setFont(new Font(Font.DIALOG,Font.BOLD,17));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(500, 300);
         setLayout(null);
         setLocationRelativeTo(null);
+        setResizable(false);
         JLabel background = new JLabel(new ImageIcon(ImageIO.read(new File(".\\Image\\Background_Tong.jpg"))));
+        ImageIcon image= new ImageIcon(ImageIO.read(new File(".\\Image\\Background_Tong.jpg")));
+        int height = image.getIconHeight();
+        int width  = image.getIconWidth();
+        setSize(width, height);
         setContentPane(background);
         //background.setLayout(null);     
         
@@ -84,34 +90,24 @@ public class View_Tong extends JFrame {
         progress_bar.setMaximum(100);
         progress_bar.setStringPainted(true);
         //progress_bar.setIndeterminate(true);
-        progress_bar.setBounds(100,100,280,25);
-	    add(progress_bar);
-	    
-//	    try {
-//	        UIManager.LookAndFeelInfo[] list = UIManager.getInstalledLookAndFeels();
-//	        for (UIManager.LookAndFeelInfo l : list) {
-//	            if (l.getName().equals("Windows")){
-//	                UIManager.setLookAndFeel(l.getClassName());
-//	                break;
-//	            }
-//	        }
-//	    } catch (InstantiationException ex) {
-//	        ex.printStackTrace();
-//	    } catch (IllegalAccessException ex) {
-//	        ex.printStackTrace();
-//	    } catch (ClassNotFoundException ex) {
-//	        ex.printStackTrace();
-//	    } catch (UnsupportedLookAndFeelException ex) {
-//	        ex.printStackTrace();
-//	    }
-	    
-	    	    
+        progress_bar.setBounds(width/2 - 100,height/2 -50, 300, 20);
+        
+        JLabel label = new JLabel();
+        label.setText("Đang tải chương trình...");
+        label.setBounds(150,75,300,25);
+        label.setFont(new Font(Font.DIALOG,Font.BOLD, 15));
+        label.setForeground(Color.BLACK);
+        add(label);
+	    add(progress_bar);	    	   	    	    
 	}
 	
 	public void run_progressbar()
 	{
 		ProgressBarUpdator updator = new ProgressBarUpdator(progress_bar);
-		updator.start();
+		MainView a = new MainView();
+		updator.setFramerun(a);
+		updator.setFrameDispose(this);
+		updator.start();		
 	}
 
 }
