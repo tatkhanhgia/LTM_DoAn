@@ -1,27 +1,26 @@
 package View;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-
 import de.javasoft.synthetica.dark.SyntheticaDarkLookAndFeel;
-
 import java.awt.Color;
+import java.awt.Cursor;
 import javax.swing.JButton;
 import java.awt.Font;
 import javax.swing.JLabel;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class MainView extends JFrame {
+	private JButton btnXLAnh;
 	private JButton btnXLPhim;
-	private JButton btnXuLyAnh;
 
 	private JPanel contentPane;
 
@@ -76,13 +75,14 @@ public class MainView extends JFrame {
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 		
-		btnXLPhim = new JButton("XỬ LÝ PHIM");
-		btnXLPhim.setFont(new Font("Times New Roman", Font.BOLD, 20));
-		btnXLPhim.setBounds(10, 316, 413, 68);			
-		panel_1.add(btnXLPhim);
+		btnXLAnh = new JButton("XỬ LÝ ẢNH");
+		btnXLAnh.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		btnXLAnh.setBounds(10, 316, 413, 68);	
+		btnXLAnh.setBorder(BorderFactory.createRaisedBevelBorder());
+		panel_1.add(btnXLAnh);
 		
 		JLabel lblNewLabel_1 = new JLabel("New label");
-		lblNewLabel_1.setIcon(new ImageIcon("D:\\HOCTAP\\LapTrinhMang\\DoAn\\LTM_DoAn\\Image\\main_i3.jpg"));
+		lblNewLabel_1.setIcon(new ImageIcon(".\\Image\\main_i3.jpg"));
 		lblNewLabel_1.setBounds(10, 10, 413, 296);
 		panel_1.add(lblNewLabel_1);
 		
@@ -97,23 +97,27 @@ public class MainView extends JFrame {
 		panel.setBackground(Color.WHITE);
 		panel.setLayout(null);
 		
-		btnXuLyAnh = new JButton("SEARCH PHIM");
-		btnXuLyAnh.setFont(new Font("Times New Roman", Font.BOLD, 20));
-		btnXuLyAnh.setBounds(10, 316, 413, 68);
-		panel.add(btnXuLyAnh);
+		btnXLPhim = new JButton("Search Phim");
+		btnXLPhim.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		btnXLPhim.setBounds(10, 316, 413, 68);
+		btnXLPhim.setBorder(BorderFactory.createRaisedBevelBorder());
+		btnXLPhim.setBackground(Color.GRAY);
+		btnXLPhim.setForeground(Color.WHITE);
+		panel.add(btnXLPhim);
 		
-		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setIcon(new ImageIcon("D:\\HOCTAP\\LapTrinhMang\\DoAn\\LTM_DoAn\\Image\\main_i1.jpg"));
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon(".\\Image\\main_i1.jpg"));
 		lblNewLabel.setBounds(10, 10, 413, 296);
 		panel.add(lblNewLabel);
 		
-		JLabel lblNewLabel_2 = new JLabel("New label");
-		lblNewLabel_2.setIcon(new ImageIcon("D:\\HOCTAP\\LapTrinhMang\\DoAn\\LTM_DoAn\\Image\\main.jpg"));
+		JLabel lblNewLabel_2 = new JLabel("");
+		lblNewLabel_2.setIcon(new ImageIcon(".\\Image\\main.jpg"));
 		lblNewLabel_2.setBounds(0, 0, 894, 534);
 		panel_2.add(lblNewLabel_2);
 		
 		//Add sự kiện cho các button
 		this.AddActionButtonPhim(this);
+		this.AddActionButtonAnh(this);
 		
 	}
 	
@@ -124,6 +128,87 @@ public class MainView extends JFrame {
 				GUI_Client_Search phim = new GUI_Client_Search();
 				phim.setVisible(true);
 				frame.dispose();
+			}
+		});
+		btnXLPhim.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				btnXLPhim.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				btnXLPhim.setBackground(Color.GRAY);
+				btnXLPhim.setForeground(Color.WHITE);
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				btnXLPhim.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				btnXLPhim.setBackground(Color.GRAY);
+				btnXLPhim.setForeground(Color.WHITE);				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {				
+				btnXLPhim.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				btnXLPhim.setBackground(Color.CYAN);
+				btnXLPhim.setForeground(Color.RED);
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	}
+	
+	private void AddActionButtonAnh(JFrame frame) {
+		btnXLAnh.addActionListener(new  ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+		btnXLAnh.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				btnXLAnh.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				btnXLAnh.setBackground(Color.GRAY);
+				btnXLAnh.setForeground(Color.WHITE);
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				btnXLAnh.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+				btnXLAnh.setBackground(Color.GRAY);
+				btnXLAnh.setForeground(Color.WHITE);				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {				
+				btnXLAnh.setCursor(new Cursor(Cursor.HAND_CURSOR));
+				btnXLAnh.setBackground(Color.cyan);
+				btnXLAnh.setForeground(Color.RED);
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 	}
