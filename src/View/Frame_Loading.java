@@ -30,16 +30,16 @@ import de.javasoft.synthetica.dark.SyntheticaDarkLookAndFeel;
 
 
 public class Frame_Loading extends JFrame {
-	
-	private JPanel contentPane;	
+
+	private JPanel contentPane;
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_2;
 	private JTextField textField_3;
 	private JTextField textField_4;
 	private JFrame		frame_progress;
-	private JProgressBar progress_bar;	
-	
+	private JProgressBar progress_bar;
+
 	public static void main(String[] args) {
 		try
 		{
@@ -82,32 +82,32 @@ public class Frame_Loading extends JFrame {
         int width  = image.getIconWidth();
         setSize(width, height);
         setContentPane(background);
-        //background.setLayout(null);     
-        
-		 
+        //background.setLayout(null);
+
+
 	    progress_bar = new JProgressBar();
 	    progress_bar.setMinimum(0);
         progress_bar.setMaximum(100);
         progress_bar.setStringPainted(true);
         //progress_bar.setIndeterminate(true);
         progress_bar.setBounds(width/2 - 100,height/2 -50, 300, 20);
-        
+
         JLabel label = new JLabel();
         label.setText("Đang tải chương trình...");
         label.setBounds(150,75,300,25);
         label.setFont(new Font(Font.DIALOG,Font.BOLD, 15));
         label.setForeground(Color.BLACK);
         add(label);
-	    add(progress_bar);	  	    	    
+	    add(progress_bar);
 	}
-	
+
 	public void run_progressbar()
 	{
 		ProgressBarUpdator updator = new ProgressBarUpdator(progress_bar);
 		MainView a = new MainView();
 		updator.setFramerun(a);
 		updator.setFrameDispose(this);
-		updator.start();		
+		updator.start();
 	}
 
 }

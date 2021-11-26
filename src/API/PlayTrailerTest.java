@@ -14,9 +14,10 @@ public class PlayTrailerTest {
             @Override
             public void run() {
                 JFrame f = new JFrame("Youtube Video");
-                f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 f.getContentPane().add(getBrowser(), BorderLayout.CENTER);
-                f.setSize(700, 1000);
+                f.setSize(700, 500);
+                f.setLocationByPlatform(true);
                 f.setVisible(true);
             }
         });
@@ -37,7 +38,9 @@ public class PlayTrailerTest {
         JWebBrowser wb = new JWebBrowser();
         wbPanel.add(wb, BorderLayout.CENTER);
         wb.setBarsVisible(false);
-        wb.navigate("https://www.youtube.com/watch?v=KlyknsTJk0w");
+//        wb.setSize(600, 400);
+//        wb.navigate("https://www.youtube.com/embed/KlyknsTJk0w");
+        wb.navigate("https://www.youtube.com/v/KlyknsTJk0w?fs=1");
 
         return wbPanel;
     }
