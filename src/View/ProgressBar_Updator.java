@@ -3,6 +3,8 @@ package View;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 
 /**
@@ -19,6 +21,8 @@ class ProgressBarUpdator implements java.lang.Runnable {
     private JProgressBar jpb = null;
     private Integer value = 0;
     private Thread thread;
+    private JFrame run;
+    private JFrame dis;
     
     public ProgressBarUpdator(javax.swing.JProgressBar jpb) {
         this.jpb = jpb;
@@ -29,8 +33,16 @@ class ProgressBarUpdator implements java.lang.Runnable {
         this.value = value;
     }
 
-     @Override
-    public void run() {
+    public void setFramerun(JFrame run) {
+    	this.run = run;
+    }
+    
+    public void setFrameDispose(JFrame dispose)
+    {
+    	this.dis = dispose;
+    }
+    @Override
+     public void run() {
         while(true)
         {
             jpb.setValue(value);
@@ -46,12 +58,15 @@ class ProgressBarUpdator implements java.lang.Runnable {
             	jpb.setValue(100);
             	break;
             }
-        }
+        }    
+        run.setVisible(true);
+        dis.dispose();
     }
-    public void start() {        
+    public void start() {       	
         if (thread == null) {
             thread = new Thread(this);
             thread.start();
         }
     }
+
 }
