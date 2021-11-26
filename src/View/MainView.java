@@ -63,6 +63,8 @@ public class MainView extends JFrame {
 		setTitle("ỨNG DỤNG SEARCH PHIM & XỬ LÝ ẢNH");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 908, 571);
+		setLocationRelativeTo(null);
+        setResizable(false);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.LIGHT_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -119,7 +121,27 @@ public class MainView extends JFrame {
 		this.AddActionButtonPhim(this);
 		this.AddActionButtonAnh(this);
 		
+		//Sự kiện + giao diện phát nhạc
+		JLabel labell = new JLabel("Nhạc:");
+	    labell.setBounds(150,75,300,25);
+	    labell.setFont(new Font(Font.DIALOG,Font.BOLD, 15));
+        labell.setForeground(Color.BLACK);
+        add(labell);
+        JPanel panelmusic = new JPanel();
+        panelmusic.setBounds(10, 10, 100, 100);
+        JButton music = new JButton("Chạy");
+        panelmusic.add(music);
+        music.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				RunMedia_BackGround a = new RunMedia_BackGround();
+				a.start();
+			}
+		});
+        add(panelmusic);
 	}
+	
 	
 	private void AddActionButtonPhim(JFrame frame) {
 		btnXLPhim.addActionListener(new  ActionListener() {			

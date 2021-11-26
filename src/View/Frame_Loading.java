@@ -98,7 +98,7 @@ public class Frame_Loading extends JFrame {
         label.setFont(new Font(Font.DIALOG,Font.BOLD, 15));
         label.setForeground(Color.BLACK);
         add(label);
-	    add(progress_bar);	    	   	    	    
+	    add(progress_bar);	  	    	    
 	}
 	
 	public void run_progressbar()
