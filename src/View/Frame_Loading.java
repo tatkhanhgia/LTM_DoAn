@@ -15,7 +15,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
 import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
@@ -23,21 +22,12 @@ import javax.swing.JButton;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import com.jtattoo.plaf.aero.AeroLookAndFeel;
-
+import Model.ProgressBar_Updator;
 import de.javasoft.plaf.synthetica.SyntheticaLookAndFeel;
 import de.javasoft.synthetica.dark.SyntheticaDarkLookAndFeel;
 
-
-
 public class Frame_Loading extends JFrame {
-
-	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
-	private JTextField textField_4;
-	private JFrame		frame_progress;
+	
 	private JProgressBar progress_bar;
 
 	public static void main(String[] args) {
@@ -82,14 +72,12 @@ public class Frame_Loading extends JFrame {
         int width  = image.getIconWidth();
         setSize(width, height);
         setContentPane(background);
-        //background.setLayout(null);
 
 
 	    progress_bar = new JProgressBar();
 	    progress_bar.setMinimum(0);
         progress_bar.setMaximum(100);
         progress_bar.setStringPainted(true);
-        //progress_bar.setIndeterminate(true);
         progress_bar.setBounds(width/2 - 100,height/2 -50, 300, 20);
 
         JLabel label = new JLabel();
@@ -103,7 +91,7 @@ public class Frame_Loading extends JFrame {
 
 	public void run_progressbar()
 	{
-		ProgressBarUpdator updator = new ProgressBarUpdator(progress_bar);
+		ProgressBar_Updator updator = new ProgressBar_Updator(progress_bar);
 		MainView a = new MainView();
 		updator.setFramerun(a);
 		updator.setFrameDispose(this);
