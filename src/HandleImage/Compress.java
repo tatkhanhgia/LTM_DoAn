@@ -8,7 +8,7 @@ public class Compress {
         ImagePlus imgPlus = new ImagePlus("src/HandleImage/Before/a.jpg");
 
         FileSaver file = new FileSaver(imgPlus);
-        file.setJpegQuality(10); // 0-100
+        file.setJpegQuality(10); // 0-100, jpeg is the smallest format size
 
         file.saveAsJpeg("src/HandleImage/After/e.jpg");
     }
