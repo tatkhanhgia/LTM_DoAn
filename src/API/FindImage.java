@@ -13,6 +13,7 @@ import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;

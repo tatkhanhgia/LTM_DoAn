@@ -2,9 +2,16 @@ package API;
 
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
+import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import uk.co.caprica.vlcj.binding.LibVlc;
+import uk.co.caprica.vlcj.player.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
+import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
+import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -21,6 +28,9 @@ import java.util.ArrayList;
 //&append_to_response=videos,images
 //movie id test : 577922, 790331, 423297, 725634, 870490, 896836 (Tenet Movie)
 //morbius movie : 526896, 437727, 301249
+
+//config vlc for playing video trailer on youtube : https://www.youtube.com/watch?v=yyrFYueZsnU
+
 public class ParseJsonFromAPI {
     final String myKey = "a51a3cac95d6510b82c611af1df272ae";
 
@@ -249,6 +259,25 @@ public class ParseJsonFromAPI {
             System.err.println(e.getMessage());
         }
         catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+        return resultAll;
+    }
+
+//    for vlcj test
+    public ArrayList<String> getFullUrlOfTrailer(String nameOfMovie) {
+        ArrayList<String> resultAll = new ArrayList<String>();
+        HttpURLConnection connection = null;
+        try {
+            ArrayList<String> keyOfTrailer = new ArrayList<String>();
+            keyOfTrailer = getKeyOfTrailer(nameOfMovie);
+            for (int i = 0; i < keyOfTrailer.size(); i += 2) {
+                String key = keyOfTrailer.get(i).toString();
+                String url = "https://www.youtube.com/watch?v=" + key;
+                resultAll.add(url);
+            }
+        }
+        catch (Exception e) {
             System.err.println(e.getMessage());
         }
         return resultAll;
@@ -665,17 +694,56 @@ public class ParseJsonFromAPI {
     public ParseJsonFromAPI() {
         String input = "tenet";
 
-//        New test
-        ArrayList<Image> movies = new ArrayList<Image>();
-        movies = getPortraitImage(input);
+//        play video with vlcj
+        ArrayList<String> results = new ArrayList<String>();
+        results = getFullUrlOfTrailer(input);
+        for (int i = 0; i < results.size(); i++) {
+            JFrame jFrame = new JFrame();
+            jFrame.setLocation(100, 100);
+            jFrame.setSize(1000, 600);
+            jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            jFrame.setVisible(true);
 
-        for (int i = 0; i < movies.size(); i++) {
-            JFrame frame = new JFrame();
-            frame.setSize(500, 300);
-            JLabel label = new JLabel(new ImageIcon(movies.get(i)));
-            frame.add(label);
-            frame.setVisible(true);
+            Canvas canvas = new Canvas();
+            canvas.setBackground(Color.black);
+
+            JPanel jPanel = new JPanel();
+            jPanel.setLayout(new BorderLayout());
+
+            jPanel.add(canvas);
+            jFrame.add(jPanel);
+
+//            folder install vlc
+            NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "D:\\VLC");
+            Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+
+            MediaPlayerFactory mpf = new MediaPlayerFactory();
+            EmbeddedMediaPlayer emp = mpf.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(jFrame));
+            emp.setVideoSurface(mpf.newVideoSurface(canvas));
+            emp.setFullScreen(false);
+            emp.setPlaySubItems(true); // is needed
+            emp.setEnableKeyInputHandling(false);
+            emp.setEnableMouseInputHandling(false);
+
+            String file = results.get(i).toString();
+            emp.prepareMedia(file);
+            emp.play();
+
+//            just play first trailer video
+            break;
         }
+
+//        New test
+//        ArrayList<Image> movies = new ArrayList<Image>();
+//        movies = getPortraitImage(input);
+//
+//        for (int i = 0; i < movies.size(); i++) {
+//            JFrame frame = new JFrame();
+//            frame.setSize(500, 300);
+//            JLabel label = new JLabel(new ImageIcon(movies.get(i)));
+//            frame.add(label);
+//            frame.setVisible(true);
+//        }
 
 //        ArrayList<String> movies = new ArrayList<String>();
 //        ArrayList<Image> posterOfMovies = new ArrayList<Image>();
