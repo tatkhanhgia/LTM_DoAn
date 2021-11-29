@@ -335,6 +335,7 @@ public class FindImage {
             EmbeddedMediaPlayer emp = mpf.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(jFrame));
             emp.setVideoSurface(mpf.newVideoSurface(canvas));
             emp.setFullScreen(false);
+            emp.setPlaySubItems(true);
             emp.setEnableKeyInputHandling(false);
             emp.setEnableMouseInputHandling(false);
 

@@ -30,6 +30,7 @@ import java.util.ArrayList;
 //morbius movie : 526896, 437727, 301249
 
 //config vlc for playing video trailer on youtube : https://www.youtube.com/watch?v=yyrFYueZsnU
+//VLC Media Player version : 2.2.6 Umbrella
 
 public class ParseJsonFromAPI {
     final String myKey = "a51a3cac95d6510b82c611af1df272ae";
