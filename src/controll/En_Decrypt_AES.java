@@ -1,4 +1,4 @@
-package Controller;
+package controll;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

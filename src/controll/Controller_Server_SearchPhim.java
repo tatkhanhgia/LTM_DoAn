@@ -1,4 +1,4 @@
-package Controller;
+package controll;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -7,13 +7,20 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.StringTokenizer;
+
+import Model.Model_RSA;
 
 public class Controller_Server_SearchPhim {
 	private BufferedReader 	in;				//read from pipe socket
 	private BufferedWriter 	out;			//write to pipe
 	private ServerSocket 	listen; 		//Socket Communicate
 	private Socket			socket_server;	//Socket in server
+	private Model_RSA		keyrsa;			//Use for SSL Handshake
+	private En_Decrypt_AES	sessionkey;		//Key AES
 	
 	//Constructor
 	public Controller_Server_SearchPhim()
@@ -37,28 +44,45 @@ public class Controller_Server_SearchPhim {
 			in = new BufferedReader(new InputStreamReader(socket_server.getInputStream()));
 			
 			String data ="";
+
+			//Start SSL handshake with Client
+			while(true) {
+				//Create RSA key and write to file
+				try {
+					En_Decrypt_RSA rsa = new En_Decrypt_RSA(1024);
+					rsa.generateKeysToFile();
+				} catch (NoSuchAlgorithmException e) {
+					System.out.println("Lỗi tạo key RSA");
+				} catch (NoSuchProviderException e) {
+					System.out.println("Lỗi tạo key RSA");
+				}
+				if(this.Send_key_RSA()&&this.Get_SessionKey();)
+				{
+					break;
+				}				
+			}
 			
 			//Read from Client
-			while (true)
-			{
-					data = in.readLine(); 
-					//Check out connect client
-					if(data.equals("bye"))					
-					{
-						this.write_to_client("bye");	
-						break;
-					}
-					if(!check_input(data))
-					{
-						this.write_to_client(new String[] {
-								"Sai cấu trúc, vui lòng nhập lại",
-								"end"
-						});
-						continue;
-					}
-					data = this.trim_extend(data);
-					//Tự điền thêm vào - có thể viết hàm hoặc ghi trực tiếp trong while connect
-			}	
+//			while (true)
+//			{
+//					data = in.readLine(); 
+//					//Check out connect client
+//					if(data.equals("bye"))					
+//					{
+//						this.write_to_client("bye");	
+//						break;
+//					}
+//					if(!check_input(data))
+//					{
+//						this.write_to_client(new String[] {
+//								"Sai cấu trúc, vui lòng nhập lại",
+//								"end"
+//						});
+//						continue;
+//					}
+//					data = this.trim_extend(data);
+//					//Tự điền thêm vào - có thể viết hàm hoặc ghi trực tiếp trong while connect
+//			}	
 			
 			//Close
 			Thread.sleep(1000);
@@ -143,6 +167,39 @@ public class Controller_Server_SearchPhim {
 		String regex = "^[\\p{L}|\\s|\\d]*$";
 		boolean gate2 = input.matches(regex);
 		return (gate1==true&&gate2==true)?true:false;		
+	}
+	
+	public boolean Send_key_RSA()  {
+		try {
+			Model_RSA key = new Model_RSA();
+			String publickey = key.getPublicKey_ToString();
+			this.write_to_client(publickey);
+			return true;
+		}
+		catch(Exception e)
+		{
+			System.out.println("Lỗi trong việc kết nối SSL với Client");
+			return false;
+		}
+	}
+	
+	public boolean Get_SessionKey() {
+		try {
+			String sessionkey = in.readLine();
+			sessionkey = keyrsa.decrypt(sessionkey);
+			this.sessionkey.mykey = sessionkey;
+			return true;
+		} catch (IOException e) {
+			System.out.println("Lấy Session Key thất bại!");
+			return false;
+		} catch (InvalidKeyException e) {
+			System.out.println("Lỗi không có key");
+			return false;
+		} catch (Exception e) {
+			System.out.println("Lỗi Get SessionKkey");
+			return false;
+		}
+		
 	}
 	
 	public static void main(String[] args) {

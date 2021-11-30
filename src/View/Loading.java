@@ -26,7 +26,7 @@ import Model.ProgressBar_Updator;
 import de.javasoft.plaf.synthetica.SyntheticaLookAndFeel;
 import de.javasoft.synthetica.dark.SyntheticaDarkLookAndFeel;
 
-public class Frame_Loading extends JFrame {
+public class Loading extends JFrame {
 	
 	private JProgressBar progress_bar;
 
@@ -49,7 +49,7 @@ public class Frame_Loading extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Frame_Loading frame = new Frame_Loading();
+					Loading frame = new Loading();
 					frame.setVisible(true);
 					frame.run_progressbar();
 				} catch (Exception e) {
@@ -59,18 +59,18 @@ public class Frame_Loading extends JFrame {
 		});
 	}
 
-	public Frame_Loading() throws IOException {
+	public Loading() throws IOException {
 		setTitle("\u1EE8NG D\u1EE4NG SEARCH PHIM & X\u1EEC L\u00DD \u1EA2NH");
 		setFont(new Font(Font.DIALOG,Font.BOLD,17));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(null);
+        getContentPane().setLayout(null);
         setLocationRelativeTo(null);
         setResizable(false);
-        JLabel background = new JLabel(new ImageIcon(ImageIO.read(new File(".\\Image\\Background_Tong.jpg"))));
-        ImageIcon image= new ImageIcon(ImageIO.read(new File(".\\Image\\Background_Tong.jpg")));
+        JLabel background = new JLabel(new ImageIcon(ImageIO.read(new File(".\\Image\\img_loading.jpg"))));
+        ImageIcon image= new ImageIcon(ImageIO.read(new File(".\\Image\\img_loading.jpg")));
         int height = image.getIconHeight();
         int width  = image.getIconWidth();
-        setSize(width, height);
+        setSize(906, 533);
         setContentPane(background);
 
 
@@ -78,15 +78,16 @@ public class Frame_Loading extends JFrame {
 	    progress_bar.setMinimum(0);
         progress_bar.setMaximum(100);
         progress_bar.setStringPainted(true);
-        progress_bar.setBounds(width/2 - 100,height/2 -50, 300, 20);
+        //progress_bar.setBounds(width/2 - 100,height/2 -50, 300, 20);
+        progress_bar.setBounds(310, 250, 300, 20);
 
         JLabel label = new JLabel();
-        label.setText("Đang tải chương trình...");
-        label.setBounds(150,75,300,25);
+        label.setText("Program is Loading... Please wait !");
+        label.setBounds(330,200,300,25);
         label.setFont(new Font(Font.DIALOG,Font.BOLD, 15));
         label.setForeground(Color.BLACK);
-        add(label);
-	    add(progress_bar);
+        getContentPane().add(label);
+	    getContentPane().add(progress_bar);
 	}
 
 	public void run_progressbar()
