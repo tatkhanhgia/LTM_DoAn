@@ -1,27 +1,16 @@
 package View;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import java.awt.Color;
-import java.awt.FlowLayout;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
-import javax.swing.JButton;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import com.jtattoo.plaf.aero.AeroLookAndFeel;
 import Model.ProgressBar_Updator;
 import de.javasoft.plaf.synthetica.SyntheticaLookAndFeel;
 import de.javasoft.synthetica.dark.SyntheticaDarkLookAndFeel;

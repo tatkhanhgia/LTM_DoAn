@@ -6,7 +6,21 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="Lib/JTattoo-1.6.13.jar"/>
-	<classpathentry kind="lib" path="Lib/syntheticaDarkSimpleDemo.jar"/>
+	<classpathentry kind="lib" path="Lib/DJNativeSwing-SWT-1-0-2/DJNativeSwing.jar"/>
+	<classpathentry kind="lib" path="Lib/DJNativeSwing-SWT-1-0-2/DJNativeSwing-SWT.jar"/>
+	<classpathentry kind="lib" path="Lib/DJNativeSwing-SWT-1-0-2/org.eclipse.swt.win32.win32.x86_64-4.3.jar"/>
+	<classpathentry kind="lib" path="Lib/imagej/ij-1.53j.jar"/>
+	<classpathentry kind="lib" path="Lib/JavaMediaFramework/jmf-2.1.1e.jar"/>
+	<classpathentry kind="lib" path="Lib/jl1.0.1/jl1.0.1.jar"/>
+	<classpathentry kind="lib" path="Lib/JTattoo/JTattoo-1.6.13.jar"/>
+	<classpathentry kind="lib" path="Lib/org.json.jar/org.json.jar"/>
+	<classpathentry kind="lib" path="Lib/syntheticaDarkSimple/syntheticaDarkSimpleDemo.jar"/>
+	<classpathentry kind="lib" path="Lib/tensorflow/libtensorflow_jni-1.1.0-rc2.jar"/>
+	<classpathentry kind="lib" path="Lib/tensorflow/libtensorflow-1.1.0-rc2.jar"/>
+	<classpathentry kind="lib" path="Lib/tensorflow/tensorflow-1.1.0-rc2.jar"/>
+	<classpathentry kind="lib" path="Lib/vlc/jna-3.5.2.jar"/>
+	<classpathentry kind="lib" path="Lib/vlc/platform-3.5.2.jar"/>
+	<classpathentry kind="lib" path="Lib/vlc/slf4j-api-1.7.10.jar"/>
+	<classpathentry kind="lib" path="Lib/vlc/vlcj-3.9.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

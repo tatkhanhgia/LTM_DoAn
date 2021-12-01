@@ -13,6 +13,9 @@ import de.javasoft.synthetica.dark.SyntheticaDarkLookAndFeel;
 import java.awt.Color;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 
 public class GUI_Client_XuLyAnh extends JFrame {
@@ -103,9 +106,26 @@ public class GUI_Client_XuLyAnh extends JFrame {
 		btnNewButton.setBounds(964, 7, 103, 25);
 		panel_2.add(btnNewButton);
 		
+		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBounds(5, 65, 717, 520);
 		contentPane.add(panel_3);
 		panel_3.setLayout(null);
+		
+		
+		//Add function
+		this.Function_Back(this, btnNewButton);
 	}
+	
+	public void Function_Back(JFrame a,JButton btnQuayLai) {
+		btnQuayLai.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainView main = new MainView();
+				main.setVisible(true);
+				a.dispose();
+			}
+		});
+	}
+	
 }

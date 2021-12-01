@@ -12,7 +12,7 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Port;
 
 public class RunMedia_BackGround implements java.lang.Runnable{
-    private Player audioPlayer = null;
+    public static Player audioPlayer = null;
     public File file[]     ;
     private int    position = 0;
     private Thread thread;
@@ -40,7 +40,6 @@ public class RunMedia_BackGround implements java.lang.Runnable{
     public void setMusic(File a)
     {
     	try {
-            //MediaLocator ml=new MediaLocator(url);
             audioPlayer = Manager.createPlayer(a.toURI().toURL());
         } catch (Exception ex) {
             System.out.println(ex);
@@ -51,7 +50,7 @@ public class RunMedia_BackGround implements java.lang.Runnable{
         audioPlayer.start(); // start playing
     }
 
-    public void control(float gain)
+    public void control_up()
     {
     	Info source = Port.Info.SPEAKER;
 
@@ -62,7 +61,12 @@ public class RunMedia_BackGround implements java.lang.Runnable{
                     Port outline = (Port) AudioSystem.getLine(source);
                     outline.open();
                     FloatControl volumeControl = (FloatControl) outline.getControl(FloatControl.Type.VOLUME);
-                    float v = 0.1F;
+                    float v;
+                    float a = volumeControl.getValue();
+                    if(a == volumeControl.getMaximum())
+                    	v = a;
+                    else
+                    	v = 0.1F + a ;
                     volumeControl.setValue(v);
                 }
                 catch (LineUnavailableException ex)
@@ -71,14 +75,41 @@ public class RunMedia_BackGround implements java.lang.Runnable{
                     ex.printStackTrace();
                 }
             }
-    	}
-
-    public void stop() {
-        audioPlayer.stop();  //stop playing
-        audioPlayer.close();
     }
 
-    public void next(int position) throws NoPlayerException, MalformedURLException, IOException {
+    public void control_down()
+    {
+    	Info source = Port.Info.SPEAKER;
+
+            if (AudioSystem.isLineSupported(source))
+            {
+                try
+                {
+                    Port outline = (Port) AudioSystem.getLine(source);
+                    outline.open();
+                    FloatControl volumeControl = (FloatControl) outline.getControl(FloatControl.Type.VOLUME);
+                    float a = volumeControl.getValue();
+                    float v;
+					if(a<0.1F)
+                    	v = 0;
+                    else
+                    	v = a- 0.1F ;
+                    volumeControl.setValue(v);
+                }
+                catch (LineUnavailableException ex)
+                {
+                    System.err.println("source not supported");
+                    ex.printStackTrace();
+                }
+            }
+    }
+    
+    public void stop() {
+        audioPlayer.stop();  //stop playing
+        //audioPlayer.close();
+    }
+
+    public void next() throws NoPlayerException, MalformedURLException, IOException {
     	this.stop();
     	if(position == 1)
     		position = 0;
@@ -88,10 +119,10 @@ public class RunMedia_BackGround implements java.lang.Runnable{
     	play();
     }
 
-    public void back(int position) throws NoPlayerException, MalformedURLException, IOException {
+    public void back() throws NoPlayerException, MalformedURLException, IOException {
     	this.stop();
     	if(position == 0)
-    		position = 2;
+    		position = 1;
     	else
     		position-=1;
     	audioPlayer = Manager.createPlayer(file[position].toURI().toURL());
@@ -107,7 +138,7 @@ public class RunMedia_BackGround implements java.lang.Runnable{
             File a = new File(".\\music\\test1.wav");
             RunMedia_BackGround sap = new RunMedia_BackGround(a);
             sap.play();
-            sap.control((float)0.5);
+
             //sap.stop();
         } catch (MalformedURLException ex) {
             System.out.println(ex);

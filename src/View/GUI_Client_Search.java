@@ -18,7 +18,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
-import Controller.Controller_Client_SearchPhim;
 import de.javasoft.synthetica.dark.SyntheticaDarkLookAndFeel;
 
 public class GUI_Client_Search extends JFrame {
@@ -31,7 +30,7 @@ public class GUI_Client_Search extends JFrame {
 	private JTextField   txtNoiDung;
 	private JButton  	 btnTimKiem;
 	private JButton		 btnQuayLai;
-	private Controller_Client_SearchPhim controller = new Controller_Client_SearchPhim();
+	//private Controller_Client_SearchPhim controller = new Controller_Client_SearchPhim();
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_2;

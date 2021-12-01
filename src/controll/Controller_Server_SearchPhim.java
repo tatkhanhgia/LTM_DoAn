@@ -56,7 +56,7 @@ public class Controller_Server_SearchPhim {
 				} catch (NoSuchProviderException e) {
 					System.out.println("Lỗi tạo key RSA");
 				}
-				if(this.Send_key_RSA()&&this.Get_SessionKey();)
+				if(this.Send_key_RSA()&&this.Get_SessionKey())
 				{
 					break;
 				}				

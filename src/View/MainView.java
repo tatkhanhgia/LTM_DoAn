@@ -11,19 +11,22 @@ import java.awt.Cursor;
 import javax.swing.JButton;
 import java.awt.Font;
 import javax.swing.JLabel;
+import javax.media.NoPlayerException;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
+import java.net.MalformedURLException;
 
 public class MainView extends JFrame {
 	private JButton btnXLAnh;
 	private JButton btnXLPhim;
-
 	private JPanel contentPane;
-
+	private RunMedia_BackGround a ;
+	private int flagstop = 0;
 	/**
 	 * Launch the application.
 	 */
@@ -127,30 +130,91 @@ public class MainView extends JFrame {
 		btnNext.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		btnNext.setBounds(0, 5, 167, 40);
 		panel_3.add(btnNext);
+		btnNext.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					a.next();
+				} catch (NoPlayerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (MalformedURLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
 		
 		JButton btnBack = new JButton("Back");
 		btnBack.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		btnBack.setBounds(176, 5, 167, 40);
 		panel_3.add(btnBack);
+		btnBack.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					a.back();
+				} catch (NoPlayerException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (MalformedURLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
 		
 		JButton btnVolumnUp = new JButton("Volumn Up");
 		btnVolumnUp.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		btnVolumnUp.setBounds(352, 5, 167, 40);
 		panel_3.add(btnVolumnUp);
+		btnVolumnUp.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				a.control_up();
+			}
+		});
 		
 		JButton btnVolumnDown = new JButton("Volumn Down");
 		btnVolumnDown.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		btnVolumnDown.setBounds(528, 5, 167, 40);
 		panel_3.add(btnVolumnDown);
+		btnVolumnDown.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				a.control_down();
+			}
+		});
 		
 		JButton btnPlay = new JButton("Play / Pause");
 		btnPlay.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		btnPlay.setBounds(705, 5, 167, 40);
 		panel_3.add(btnPlay);
+		btnPlay.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(flagstop != 0)
+				{
+					a.stop();
+					flagstop = 0;
+				}
+				else {
+					a.start();
+					flagstop = 1;
+				}
+			}
+		});
 
 		//Add sự kiện cho các button
 		this.AddActionButtonPhim(this);
 		this.AddActionButtonAnh(this);
+		this.runmedia();
 	}
 
 
@@ -205,7 +269,9 @@ public class MainView extends JFrame {
 		btnXLAnh.addActionListener(new  ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				GUI_Client_XuLyAnh a = new GUI_Client_XuLyAnh();
+				a.setVisible(true);
+				frame.dispose();
 			}
 		});
 		btnXLAnh.addMouseListener(new MouseListener() {
@@ -244,5 +310,11 @@ public class MainView extends JFrame {
 
 			}
 		});
+	}
+
+	private void runmedia() {
+		a = new RunMedia_BackGround();
+		a.init();
+		a.start();
 	}
 }
