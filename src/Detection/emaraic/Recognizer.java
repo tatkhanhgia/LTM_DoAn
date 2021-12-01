@@ -1,6 +1,6 @@
-package ObjectRecognition.emaraic;
+package Detection.emaraic;
 
-import com.esotericsoftware.tablelayout.swing.Table;
+import Detection.esotericsoftware.tablelayout.swing.Table;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -269,3 +269,4 @@ public class Recognizer extends JFrame implements ActionListener {
     }
 
 }
+
