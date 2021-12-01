@@ -32,6 +32,9 @@ public class GUI_Client_Search extends JFrame {
 	private JButton  	 btnTimKiem;
 	private JButton		 btnQuayLai;
 	private Controller_Client_SearchPhim controller = new Controller_Client_SearchPhim();
+	private JTextField textField;
+	private JTextField textField_1;
+	private JTextField textField_2;
 
 	public static void main(String[] args) {
 		try
@@ -62,9 +65,9 @@ public class GUI_Client_Search extends JFrame {
 	}
 
 	public GUI_Client_Search() {
-		setTitle("\u1EE8NG D\u1EE4NG SEARCH PHIM");
+		setTitle("TRANG SEARCH PHIM");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1101, 668);
+		setBounds(100, 100, 1090, 652);
 		setLocationRelativeTo(null);
         setResizable(false);
 		contentPane = new JPanel();
@@ -74,7 +77,7 @@ public class GUI_Client_Search extends JFrame {
 		contentPane.setLayout(null);
 
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 10, 1067, 119);
+		panel.setBounds(5, 5, 1077, 119);
 		contentPane.add(panel);
 		panel.setLayout(null);
 
@@ -99,7 +102,7 @@ public class GUI_Client_Search extends JFrame {
 		panel.add(btnTimKiem);
 
 		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(10, 139, 273, 424);
+		panel_1.setBounds(5, 132, 273, 450);
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 
@@ -110,11 +113,11 @@ public class GUI_Client_Search extends JFrame {
 
 		JLabel lblNewLabel_1_2 = new JLabel("M\u00F4 t\u1EA3:");
 		lblNewLabel_1_2.setFont(new Font("Times New Roman", Font.PLAIN, 15));
-		lblNewLabel_1_2.setBounds(28, 56, 50, 19);
+		lblNewLabel_1_2.setBounds(5, 56, 50, 19);
 		panel_1.add(lblNewLabel_1_2);
 
 		txtMoTa = new JTextField();
-		txtMoTa.setBounds(69, 56, 191, 86);
+		txtMoTa.setBounds(49, 56, 211, 86);
 		txtMoTa.setColumns(10);
 		txtMoTa.setEditable(false);
 		panel_1.add(txtMoTa);
@@ -122,16 +125,16 @@ public class GUI_Client_Search extends JFrame {
 
 		JLabel lblNewLabel_1_2_1 = new JLabel("\u0110\u1EA1o di\u1EC5n:");
 		lblNewLabel_1_2_1.setFont(new Font("Times New Roman", Font.PLAIN, 15));
-		lblNewLabel_1_2_1.setBounds(10, 152, 75, 19);
+		lblNewLabel_1_2_1.setBounds(5, 152, 75, 19);
 		panel_1.add(lblNewLabel_1_2_1);
 
-		JLabel lblNewLabel_1_2_1_1 = new JLabel("Di\u1EC5n vi\u00EAn");
+		JLabel lblNewLabel_1_2_1_1 = new JLabel("Diễn viên:");
 		lblNewLabel_1_2_1_1.setFont(new Font("Times New Roman", Font.PLAIN, 15));
-		lblNewLabel_1_2_1_1.setBounds(10, 189, 80, 19);
+		lblNewLabel_1_2_1_1.setBounds(5, 189, 80, 19);
 		panel_1.add(lblNewLabel_1_2_1_1);
 
 		txtDaoDien = new JTextField();
-		txtDaoDien.setBounds(69, 152, 191, 19);
+		txtDaoDien.setBounds(66, 152, 194, 20);
 		txtDaoDien.setColumns(10);
 		txtDaoDien.setEditable(false);
 		panel_1.add(txtDaoDien);
@@ -142,9 +145,42 @@ public class GUI_Client_Search extends JFrame {
 		txtDienVien.setBounds(69, 190, 191, 45);
 		txtDienVien.setEditable(false);
 		panel_1.add(txtDienVien);
+		
+		JLabel lblNewLabel_1_2_1_1_2 = new JLabel("Thể loại:");
+		lblNewLabel_1_2_1_1_2.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		lblNewLabel_1_2_1_1_2.setBounds(5, 253, 80, 19);
+		panel_1.add(lblNewLabel_1_2_1_1_2);
+		
+		JLabel lblNewLabel_1_2_1_1_2_1 = new JLabel("Lượng vote:");
+		lblNewLabel_1_2_1_1_2_1.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		lblNewLabel_1_2_1_1_2_1.setBounds(5, 310, 80, 19);
+		panel_1.add(lblNewLabel_1_2_1_1_2_1);
+		
+		textField = new JTextField();
+		textField.setEditable(false);
+		textField.setColumns(10);
+		textField.setBounds(69, 254, 191, 45);
+		panel_1.add(textField);
+		
+		textField_1 = new JTextField();
+		textField_1.setEditable(false);
+		textField_1.setColumns(10);
+		textField_1.setBounds(79, 310, 181, 76);
+		panel_1.add(textField_1);
+		
+		JLabel lblNewLabel_1_2_1_1_2_1_1 = new JLabel("Điểm trung bình:");
+		lblNewLabel_1_2_1_1_2_1_1.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		lblNewLabel_1_2_1_1_2_1_1.setBounds(5, 396, 110, 19);
+		panel_1.add(lblNewLabel_1_2_1_1_2_1_1);
+		
+		textField_2 = new JTextField();
+		textField_2.setEditable(false);
+		textField_2.setColumns(10);
+		textField_2.setBounds(110, 396, 150, 20);
+		panel_1.add(textField_2);
 
 		JPanel panel_2 = new JPanel();
-		panel_2.setBounds(293, 139, 495, 424);
+		panel_2.setBounds(287, 132, 500, 450);
 		contentPane.add(panel_2);
 		panel_2.setLayout(null);
 
@@ -154,7 +190,7 @@ public class GUI_Client_Search extends JFrame {
 		panel_2.add(lblNewLabel_2_1);
 
 		JPanel panel_3 = new JPanel();
-		panel_3.setBounds(798, 139, 279, 424);
+		panel_3.setBounds(796, 132, 285, 450);
 		contentPane.add(panel_3);
 		panel_3.setLayout(null);
 
@@ -165,11 +201,11 @@ public class GUI_Client_Search extends JFrame {
 
 		JLabel lblNewLabel_1_2_1_1_1 = new JLabel("N\u1ED9i dung:");
 		lblNewLabel_1_2_1_1_1.setFont(new Font("Times New Roman", Font.PLAIN, 15));
-		lblNewLabel_1_2_1_1_1.setBounds(10, 257, 80, 20);
+		lblNewLabel_1_2_1_1_1.setBounds(10, 271, 80, 20);
 		panel_3.add(lblNewLabel_1_2_1_1_1);
 
 		txtNoiDung = new JTextField();
-		txtNoiDung.setBounds(10, 275, 259, 139);
+		txtNoiDung.setBounds(10, 301, 265, 139);
 		txtNoiDung.setEditable(false);
 		txtNoiDung.setColumns(10);
 		panel_3.add(txtNoiDung);
@@ -181,18 +217,18 @@ public class GUI_Client_Search extends JFrame {
 		panel_3.add(lblNewLabel_3);
 
 		JPanel panel_4 = new JPanel();
-		panel_4.setBounds(10, 573, 1067, 48);
+		panel_4.setBounds(5, 587, 1077, 33);
 		contentPane.add(panel_4);
 		panel_4.setLayout(null);
 
 		btnQuayLai = new JButton("Quay l\u1EA1i");
-		btnQuayLai.setBounds(954, 10, 103, 27);
+		btnQuayLai.setBounds(960, 5, 103, 25);
 		panel_4.add(btnQuayLai);
 		btnQuayLai.setFont(new Font("Times New Roman", Font.PLAIN, 14));
 
-		JLabel lblNewLabel_1_1 = new JLabel("Copyright: L\u1EADp Tr\u00ECnh M\u1EA1ng - Nh\u00F3m T\u1EA5t Kh\u00E1nh Gia - @2021");
+		JLabel lblNewLabel_1_1 = new JLabel("Copyright: Lập Trình Mạng - Nhóm Tất Khánh Gia - @12/2021");
 		lblNewLabel_1_1.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-		lblNewLabel_1_1.setBounds(10, 14, 365, 19);
+		lblNewLabel_1_1.setBounds(10, 5, 380, 19);
 		panel_4.add(lblNewLabel_1_1);
 
 		//Add function

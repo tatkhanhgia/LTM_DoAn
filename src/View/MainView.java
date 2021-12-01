@@ -62,7 +62,7 @@ public class MainView extends JFrame {
 		setResizable(false);
 		setTitle("ỨNG DỤNG SEARCH PHIM & XỬ LÝ ẢNH");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 908, 571);
+		setBounds(100, 100, 902, 569);
 		setLocationRelativeTo(null);
         setResizable(false);
 		contentPane = new JPanel();
@@ -73,35 +73,35 @@ public class MainView extends JFrame {
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(Color.WHITE);
-		panel_1.setBounds(453, 130, 431, 394);
+		panel_1.setBounds(453, 135, 416, 384);
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 
 		btnXLAnh = new JButton("XỬ LÝ ẢNH");
 		btnXLAnh.setFont(new Font("Times New Roman", Font.BOLD, 20));
-		btnXLAnh.setBounds(10, 316, 413, 68);
+		btnXLAnh.setBounds(7, 309, 402, 68);
 		btnXLAnh.setBorder(BorderFactory.createRaisedBevelBorder());
 		panel_1.add(btnXLAnh);
 
 		JLabel lblNewLabel_1 = new JLabel("New label");
 		lblNewLabel_1.setIcon(new ImageIcon(".\\Image\\main_i3.jpg"));
-		lblNewLabel_1.setBounds(10, 10, 413, 296);
+		lblNewLabel_1.setBounds(7, 10, 402, 289);
 		panel_1.add(lblNewLabel_1);
 
 		JPanel panel_2 = new JPanel();
-		panel_2.setBounds(0, 0, 894, 534);
+		panel_2.setBounds(0, 0, 904, 547);
 		contentPane.add(panel_2);
 		panel_2.setLayout(null);
 
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 130, 433, 394);
+		panel.setBounds(20, 135, 416, 384);
 		panel_2.add(panel);
 		panel.setBackground(Color.WHITE);
 		panel.setLayout(null);
 
-		btnXLPhim = new JButton("Search Phim");
+		btnXLPhim = new JButton("SEARCH PHIM");
 		btnXLPhim.setFont(new Font("Times New Roman", Font.BOLD, 20));
-		btnXLPhim.setBounds(10, 316, 413, 68);
+		btnXLPhim.setBounds(7, 309, 402, 68);
 		btnXLPhim.setBorder(BorderFactory.createRaisedBevelBorder());
 		btnXLPhim.setBackground(Color.GRAY);
 		btnXLPhim.setForeground(Color.WHITE);
@@ -109,37 +109,48 @@ public class MainView extends JFrame {
 
 		JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.setIcon(new ImageIcon(".\\Image\\main_i1.jpg"));
-		lblNewLabel.setBounds(10, 10, 413, 296);
+		lblNewLabel.setBounds(7, 10, 402, 289);
 		panel.add(lblNewLabel);
 
 		JLabel lblNewLabel_2 = new JLabel("");
 		lblNewLabel_2.setIcon(new ImageIcon(".\\Image\\main.jpg"));
-		lblNewLabel_2.setBounds(0, 0, 894, 534);
+		lblNewLabel_2.setBounds(0, 50, 907, 490);
+		
 		panel_2.add(lblNewLabel_2);
+		
+		JPanel panel_3 = new JPanel();
+		panel_3.setBounds(10, 0, 873, 50);
+		panel_2.add(panel_3);
+		panel_3.setLayout(null);
+		
+		JButton btnNext = new JButton("Next");
+		btnNext.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		btnNext.setBounds(0, 5, 167, 40);
+		panel_3.add(btnNext);
+		
+		JButton btnBack = new JButton("Back");
+		btnBack.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		btnBack.setBounds(176, 5, 167, 40);
+		panel_3.add(btnBack);
+		
+		JButton btnVolumnUp = new JButton("Volumn Up");
+		btnVolumnUp.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		btnVolumnUp.setBounds(352, 5, 167, 40);
+		panel_3.add(btnVolumnUp);
+		
+		JButton btnVolumnDown = new JButton("Volumn Down");
+		btnVolumnDown.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		btnVolumnDown.setBounds(528, 5, 167, 40);
+		panel_3.add(btnVolumnDown);
+		
+		JButton btnPlay = new JButton("Play / Pause");
+		btnPlay.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		btnPlay.setBounds(705, 5, 167, 40);
+		panel_3.add(btnPlay);
 
 		//Add sự kiện cho các button
 		this.AddActionButtonPhim(this);
 		this.AddActionButtonAnh(this);
-
-		//Sự kiện + giao diện phát nhạc
-		JLabel labell = new JLabel("Nhạc:");
-	    labell.setBounds(150,75,300,25);
-	    labell.setFont(new Font(Font.DIALOG,Font.BOLD, 15));
-        labell.setForeground(Color.BLACK);
-        add(labell);
-        JPanel panelmusic = new JPanel();
-        panelmusic.setBounds(10, 10, 100, 100);
-        JButton music = new JButton("Chạy");
-        panelmusic.add(music);
-        music.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				RunMedia_BackGround a = new RunMedia_BackGround();
-				a.start();
-			}
-		});
-        add(panelmusic);
 	}
 
 
@@ -177,8 +188,8 @@ public class MainView extends JFrame {
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				btnXLPhim.setCursor(new Cursor(Cursor.HAND_CURSOR));
-				btnXLPhim.setBackground(Color.CYAN);
-				btnXLPhim.setForeground(Color.RED);
+				btnXLPhim.setBackground(Color.BLACK);
+				btnXLPhim.setForeground(Color.YELLOW);
 
 			}
 
@@ -222,8 +233,8 @@ public class MainView extends JFrame {
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				btnXLAnh.setCursor(new Cursor(Cursor.HAND_CURSOR));
-				btnXLAnh.setBackground(Color.cyan);
-				btnXLAnh.setForeground(Color.RED);
+				btnXLAnh.setBackground(Color.BLACK);
+				btnXLAnh.setForeground(Color.YELLOW);
 
 			}
 

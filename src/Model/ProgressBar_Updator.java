@@ -1,9 +1,8 @@
-package View;
+package Model;
 
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 
@@ -13,18 +12,18 @@ import javax.swing.JProgressBar;
  */
 
 
-/* Class này dùng để tạo 1 thread khác với thread sử dụng của swing, nhằm update ProgressBar
+ /* Class này dùng để tạo 1 thread khác với thread sử dụng của swing, nhằm update ProgressBar
  * This is use for update progressbar. Create new thread and update in that thread.
  * */
  
-class ProgressBarUpdator implements java.lang.Runnable {
-    private JProgressBar jpb = null;
-    private Integer value = 0;
-    private Thread thread;
-    private JFrame run;
-    private JFrame dis;
+public class ProgressBar_Updator implements java.lang.Runnable {
+    public JProgressBar jpb = null;
+    public Integer value = 0;
+    public Thread thread;
+    public JFrame run;
+    public JFrame dis;
     
-    public ProgressBarUpdator(javax.swing.JProgressBar jpb) {
+    public ProgressBar_Updator(javax.swing.JProgressBar jpb) {
         this.jpb = jpb;
         jpb.setMaximum(100);
     }
@@ -49,7 +48,7 @@ class ProgressBarUpdator implements java.lang.Runnable {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
-                Logger.getLogger(ProgressBarUpdator.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ProgressBar_Updator.class.getName()).log(Level.SEVERE, null, ex);
             }
             Random random = new Random();
             value += 5+random.nextInt(10);
