@@ -18,7 +18,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
-import Controller.Controller_Client_SearchPhim;
+import controll.Controller_Client_SearchPhim;
 import de.javasoft.synthetica.dark.SyntheticaDarkLookAndFeel;
 
 public class GUI_Client_Search extends JFrame {
