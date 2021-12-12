@@ -16,6 +16,9 @@ import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +27,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import Model.Model_Movie;
 
 //&append_to_response=videos,images
 //movie id test : 577922, 790331, 423297, 725634, 870490, 896836 (Tenet Movie)
@@ -34,11 +38,13 @@ import java.util.ArrayList;
 
 public class ParseJsonFromAPI {
     final String myKey = "a51a3cac95d6510b82c611af1df272ae";
-
+    public ArrayList<String> phim;
+    public ArrayList<Model_Movie> arraymovie;
 //    return id and poster of movie to get info of movie (in page 1)
 //    need check if name of movie is null
     public ArrayList<String> searchByName(String nameOfMovie) {
-        ArrayList<String> resultAll = new ArrayList<String>();
+        phim = new ArrayList<String>();
+        arraymovie = new ArrayList<>();
         HttpURLConnection connection = null;
         try {
             String handleNameOfMovie = nameOfMovie.trim();
@@ -83,21 +89,23 @@ public class ParseJsonFromAPI {
                 String popularity = childOfResults.getString("popularity");
                 String vote_average = childOfResults.getString("vote_average");
                 String vote_count = childOfResults.getString("vote_count");
-
 //                get backdrop and poster image
                 String backdrop_path = childOfResults.getString("backdrop_path");
                 String poster_path = childOfResults.getString("poster_path");
 
-                resultAll.add(id);
-//                resultAll.add(title);
-//                resultAll.add(overview);
-//                resultAll.add(release_date);
-//                resultAll.add(original_language);
-//                resultAll.add(popularity);
-//                resultAll.add(vote_average);
-//                resultAll.add(vote_count);
-//                resultAll.add(backdrop_path);
-                resultAll.add(poster_path);
+                phim.add(id);
+                phim.add(title);
+                phim.add(overview);
+                phim.add(release_date);
+                phim.add(original_language);
+                phim.add(popularity);
+                phim.add(vote_average);
+                phim.add(vote_count);
+                phim.add(backdrop_path);
+                phim.add(poster_path);
+                Model_Movie temp = new Model_Movie(id,title,overview,release_date,original_language
+                						, popularity,vote_average,vote_count,backdrop_path,poster_path);
+                arraymovie.add(temp);
             }
             reader.close();
         }
@@ -110,29 +118,33 @@ public class ParseJsonFromAPI {
         catch (IOException e) {
             System.err.println(e.getMessage());
         }
-        return resultAll;
+        return phim;
     }
 
 //    some movies don't have poster image
     public ArrayList<Image> getPosterImage(String nameOfMovie) {
-        ArrayList<Image> resultAll = new ArrayList<Image>();
-        HttpURLConnection connection = null;
-        try {
+        ArrayList<Image> resultAll = new ArrayList<Image>();                	
             ArrayList<String> posterPath = new ArrayList<String>();
-            posterPath = searchByName(nameOfMovie);
-            for (int i = 1; i < posterPath.size(); i += 2) {
+            for(int i = 0; i < arraymovie.size();i++) {
+            	posterPath.add(arraymovie.get(i).getPoster_path());
+            }
+            for (int i = 0; i < posterPath.size(); i ++) {
+            	try {
 //                can switch "w500" and "original" size
                 URL url = new URL("https://image.tmdb.org/t/p/w500/" + posterPath.get(i));
-                Image posterImage = ImageIO.read(url);
+                BufferedImage posterImage = ImageIO.read(url);
+                
+                arraymovie.get(i).poster_path_url = "https://image.tmdb.org/t/p/w500/"+posterPath.get(i);                        
+                arraymovie.get(i).setPoster_image(posterImage);
                 resultAll.add(posterImage);
+            	}
+            	catch(IOException e)
+            	{
+            	   arraymovie.get(i).setPoster_image(null);
+            	   arraymovie.get(i).poster_path_url = null;
+            	   System.out.println("Không thể get hình ảnh");
+            	}
             }
-        }
-        catch (MalformedURLException e) {
-            System.err.println(e.getMessage());
-        }
-        catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
         return resultAll;
     }
 
@@ -142,10 +154,13 @@ public class ParseJsonFromAPI {
         HttpURLConnection connection = null;
         try {
             ArrayList<String> reviews = new ArrayList<String>();
-            reviews = searchByName(nameOfMovie);
+            for(int i=0;i<this.arraymovie.size();i++)
+            {
+            	reviews.add(this.arraymovie.get(i).getId());
+            }
 
 //            get review list of movies
-            for (int i = 0; i < reviews.size(); i += 2) {
+            for (int i = 0; i < reviews.size(); i ++) {
                 String id = reviews.get(i).toString();
                 URL url = new URL("https://api.themoviedb.org/3/movie/" + id + "/reviews?api_key=" + myKey + "&language=en-US" + "&page=" + "1");
 
@@ -167,6 +182,9 @@ public class ParseJsonFromAPI {
                 JSONObject object = new JSONObject(result);
 
                 JSONArray results = object.getJSONArray("results");
+                ArrayList<String> authorr = new ArrayList();
+                ArrayList<String> review = new ArrayList();
+                if (result.length()>=1) {
                 for (int j = 0; j < results.length(); j++) {
                     JSONObject childOfResults = results.getJSONObject(j);
                     String idOfReview = childOfResults.getString("id");
@@ -176,13 +194,24 @@ public class ParseJsonFromAPI {
                     String created_at = childOfResults.getString("created_at");
                     String updated_at = childOfResults.getString("updated_at");
 
-//                    resultAll.add(idOfReview);
+//                    resultAll.add(idOfReview);                    
                     resultAll.add(author);
                     resultAll.add(content);
 //                    resultAll.add(urlOfReview);
 //                    resultAll.add(created_at);
 //                    resultAll.add(updated_at);
+                    authorr.add(author);
+                    review.add(content);
                 }
+                	this.arraymovie.get(i).setAuthor(authorr);
+                	this.arraymovie.get(i).setReview(review);
+                }
+                else
+                {
+                	this.arraymovie.get(i).setAuthor(null);
+                	this.arraymovie.get(i).setReview(null);
+                }
+                
                 reader.close();
             }
         }
@@ -205,10 +234,13 @@ public class ParseJsonFromAPI {
         HttpURLConnection connection = null;
         try {
             ArrayList<String> reviews = new ArrayList<String>();
-            reviews = searchByName(nameOfMovie);
+            for(int i=0; i<this.arraymovie.size();i++)
+            {
+            	reviews.add(this.arraymovie.get(i).getId());
+            }
 
 //            get video trailer list of movies
-            for (int i = 0; i < reviews.size(); i += 2) {
+            for (int i = 0; i < reviews.size(); i ++) {
                 String id = reviews.get(i).toString();
                 URL url = new URL("https://api.themoviedb.org/3/movie/" + id + "/videos?api_key=" + myKey + "&language=en-US" + "&page=" + "1");
 
@@ -243,6 +275,8 @@ public class ParseJsonFromAPI {
 
                     resultAll.add(key);
                     resultAll.add(name);
+                    this.arraymovie.get(i).setKeyTrailer(key);
+                    this.arraymovie.get(i).setNameTrailer(name);
 //                    resultAll.add(type);
 //                    resultAll.add(idOfTrailer);
 //                    resultAll.add(published_at);
@@ -335,6 +369,85 @@ public class ParseJsonFromAPI {
         return resultAll;
     }
 
+    
+    public void playTrailerFromBrowser2(String id) {                
+        try {        		               
+                String url = "https://www.youtube.com/watch?v="+id ;
+                
+//                Test play trailer
+                JPanel panel = new JPanel(new BorderLayout());
+                JWebBrowser browser = new JWebBrowser();
+                panel.add(browser, BorderLayout.CENTER);
+                browser.setBarsVisible(false);
+
+                browser.navigate(url);
+                System.out.println("Vào api");
+                NativeInterface.open();
+
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        JFrame frame = new JFrame("Youtube Video");
+                        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                        frame.getContentPane().add(panel, BorderLayout.CENTER);
+                        frame.setSize(700, 400);
+                        frame.setVisible(true);      
+                        frame.addWindowListener(new WindowListener() {
+							
+							@Override
+							public void windowOpened(WindowEvent e) {							
+							}
+							
+							@Override
+							public void windowIconified(WindowEvent e) {
+								
+							}
+							
+							@Override
+							public void windowDeiconified(WindowEvent e) {
+							}
+							
+							@Override
+							public void windowDeactivated(WindowEvent e) {
+								// TODO Auto-generated method stub
+								
+							}
+							
+							@Override
+							public void windowClosing(WindowEvent e) {
+								NativeInterface.close();
+								frame.dispose();								
+							}
+							
+							@Override
+							public void windowClosed(WindowEvent e) {
+								// TODO Auto-generated method stub
+								
+							}
+							
+							@Override
+							public void windowActivated(WindowEvent e) {
+								// TODO Auto-generated method stub
+								
+							}
+						});
+                    }
+                });
+
+                NativeInterface.runEventPump();
+
+//                Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        
+//                    }
+//                }));            
+        }
+        catch (Exception e) {
+            System.err.println(e.getMessage());
+        }        
+    }
+    
     public ArrayList<String> getPopularMovie() {
         ArrayList<String> resultAll = new ArrayList<String>();
         HttpURLConnection connection = null;
@@ -567,9 +680,11 @@ public class ParseJsonFromAPI {
         ArrayList<String> resultAll = new ArrayList<String>();
         HttpURLConnection connection = null;
         try {
-            ArrayList<String> actors = new ArrayList<String>();
-            actors = searchByName(nameOfMovie);
-
+            ArrayList<String> actors = new ArrayList<String>();            
+            for ( int i = 0; i<this.arraymovie.size();i++)
+            {
+            	actors.add(this.arraymovie.get(i).getId());
+            }
 //            get actor of movies
             for (int i = 0; i < actors.size(); i += 2) {
                 String id = actors.get(i).toString();
@@ -596,6 +711,7 @@ public class ParseJsonFromAPI {
                 JSONArray crew = object.getJSONArray("crew");
 
 //                get cast
+                ArrayList<String> castt = new ArrayList();
                 for (int j = 0; j < cast.length(); j++) {
                     JSONObject childOfCast = cast.getJSONObject(j);
                     String idOfCast = childOfCast.getString("id");
@@ -623,9 +739,11 @@ public class ParseJsonFromAPI {
 //                    resultAll.add(gender);
 //                    resultAll.add(order);
                     resultAll.add(profile_path);
+                    castt.add(nameOfCast);
                 }
 
 //                get crew
+                ArrayList<String> creww = new ArrayList();
                 for (int k = 0; k < crew.length(); k++) {
                     JSONObject childOfCrew = crew.getJSONObject(k);
                     String idOfCrew = childOfCrew.getString("id");
@@ -651,7 +769,10 @@ public class ParseJsonFromAPI {
 //                    resultAll.add(adult);
 //                    resultAll.add(gender);
 //                    resultAll.add(profile_path);
+                    creww.add(nameOfCrew);
                 }
+                arraymovie.get(i).setCast(castt);
+                arraymovie.get(i).setCrew(creww);
                 reader.close();
             }
         }
@@ -692,7 +813,7 @@ public class ParseJsonFromAPI {
         return resultAll;
     }
 
-    public ParseJsonFromAPI() {
+    public void ParseJsonFromAPI1() {
         String input = "tenet";
 
 //        play video with vlcj
@@ -788,8 +909,34 @@ public class ParseJsonFromAPI {
 
     }
 
+    public ParseJsonFromAPI() {
+    }
+    
     public static void main(String[] args) {
         ParseJsonFromAPI p = new ParseJsonFromAPI();
+        p.searchByName("The Death");         
+		//p.getPosterImage("BlackPink");
+		p.getReviewOfMovie("The Death");
+		//p.getActorOfMovie("The Death");
+//        int i = 0;
+//        for(;i<p.arraymovie.size();i++)
+//        {
+//        	if(i==10||i==20)
+//        		System.out.println("\n");
+//        	System.out.println(p.arraymovie.get(i).getTitle());
+//        }
+//        p.searchByName("The Death");
+//        p.getKeyOfTrailer(null);
+        for(int i=0; i<p.arraymovie.size();i++)
+        {        	
+        	ArrayList<String> review = p.arraymovie.get(i).getReview();        
+        	System.out.println("Review:"+p.arraymovie.get(i).getReview_ToString());
+//        	for(int j=0 ; j<review.size();j++)
+//        	{
+//        		System.out.println("Review:"+review.get(j));
+//        	}
+        }
+        
     }
 
 }

@@ -5,6 +5,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
+
+import controll.Controller_Client_SearchPhim;
 import de.javasoft.synthetica.dark.SyntheticaDarkLookAndFeel;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -222,8 +224,10 @@ public class MainView extends JFrame {
 		btnXLPhim.addActionListener(new  ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				GUI_Client_Search phim = new GUI_Client_Search();
+				ListFrame phim = new ListFrame();
 				phim.setVisible(true);
+				ListFrame.controller = new Controller_Client_SearchPhim();
+				ListFrame.controller.Open_Client("localhost", 6000);
 				frame.dispose();
 			}
 		});
