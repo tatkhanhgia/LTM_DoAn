@@ -231,79 +231,71 @@ public class Controller_Server_SearchPhim {
 		API.getReviewOfMovie(phim);
 		API.getActorOfMovie(phim);
 		API.getKeyOfTrailer(phim);
-		//ArrayList<String> temp =API.searchByName(phim); 
-		//------------ server hiện
-//				for(int i=0; i<API.arraymovie.size();i++)
-//				{
-//					System.out.println("ID:"+API.arraymovie.get(i).getId());
-//					System.out.println("Title:"+API.arraymovie.get(i).getTitle());
-//					System.out.println("Vote_av:"+API.arraymovie.get(i).getVote_av());
-//					System.out.println("Vote count:"+API.arraymovie.get(i).getVote_count());
-//					System.out.println("Poster:"+API.arraymovie.get(i).poster_path_url);
-//					System.out.println("key:"+API.arraymovie.get(i).getKeyTrailer());				
-//					ArrayList<String> author = API.arraymovie.get(i).getAuthor();
-//					if ( author != null) {
-//					for(int j=0;j<author.size();j++)
-//					{
-//						System.out.println("Author:"+author.get(j));
-//					}
-//					}
-//					ArrayList<String> review = API.arraymovie.get(i).getReview();
-//					if ( review != null) {
-//					for(int j=0;j<review.size();j++)
-//					{
-//						System.out.println("Review:"+review.get(j));
-//					}}
-//					ArrayList<String> actor = API.arraymovie.get(i).getCast();
-//					if ( actor != null) {
-//					for(int j=0;j<actor.size();j++)
-//					{
-//						System.out.println("Actor:"+actor.get(j));
-//					}}
-//					ArrayList<String> crew = API.arraymovie.get(i).getCrew();
-//					if ( crew != null) {
-//					for(int j=0;j<crew.size();j++)
-//					{
-//						System.out.println("Crew:"+crew.get(j));
-//					}
-//					}
-//					System.out.println("\n\n\tNext movie:");
-//				}
+		API.getDetailOfMovie(phim);
 		
 		//
 		for(int i=0;i<API.arraymovie.size();i++)
 		{			
-			this.write_to_client(API.arraymovie.get(i).getId());
-			this.write_to_client(API.arraymovie.get(i).getTitle());
-			this.write_to_client(API.arraymovie.get(i).getOverview());
-			this.write_to_client(API.arraymovie.get(i).getVote_av());
-			this.write_to_client(API.arraymovie.get(i).getVote_count());	
-//			if(API.arraymovie.get(i).getPoster_image() != null) {
-//				this.write_to_client("null");
-//			}
-//			else
-//				this.write_to_client(API.arraymovie.get(i).encodeImage());
-			if(API.arraymovie.get(i).poster_path_url != null) {
+			this.write_to_client(API.arraymovie.get(i).getId());		//Gửi id
+			
+			this.write_to_client(API.arraymovie.get(i).getTitle());		//Gửi title
+			
+			this.write_to_client(API.arraymovie.get(i).getOri());		//Gửi ngôn ngữ
+			
+			String temp = API.arraymovie.get(i).getDate();				//Gửi realease date
+			if ( temp!=null)
+			{
+				this.write_to_client(temp);
+			} else this.write_to_client("null");
+			
+			this.write_to_client(API.arraymovie.get(i).getOverview());	//Gửi môtả		
+			
+			this.write_to_client(API.arraymovie.get(i).getVote_av());	//Gửi vote
+			
+			this.write_to_client(API.arraymovie.get(i).getVote_count());//Gửi vote
+			
+			temp = API.arraymovie.get(i).getNgansach();			//Gửi ngân sách
+			if ( temp!=null)
+			{
+				this.write_to_client(temp);
+			} else this.write_to_client("null");
+						
+			temp = API.arraymovie.get(i).getDoanhthu();			//Gửi doanh thu
+			if ( temp!=null)
+			{
+				this.write_to_client(temp);
+			} else this.write_to_client("null");
+			
+			//Gửi ảnh poster
+			if(API.arraymovie.get(i).getPoster_image() == null) {
+				this.write_to_client("null");
+			}
+			else
+				{this.write_to_client(API.arraymovie.get(i).encodeImage());				
+				}
+			
+			//Gửi posterpath
+			if(API.arraymovie.get(i).poster_path_url != null) {			
 				this.write_to_client(API.arraymovie.get(i).poster_path_url);
 			}
 			else
 				this.write_to_client("null");
 				
 			//Gửi trailer
-				if(API.arraymovie.get(i).getKeyTrailer() != null) {
-					this.write_to_client(API.arraymovie.get(i).getKeyTrailer());
-				}
-				else
-					this.write_to_client("null");
+			if(API.arraymovie.get(i).getKeyTrailer() != null) {
+				this.write_to_client(API.arraymovie.get(i).getKeyTrailer());
+			}
+			else
+				this.write_to_client("null");
 			
 			//Gửi Author					
 			ArrayList<String> author = API.arraymovie.get(i).getAuthor();
-			if ( author != null) {
-			for(int j=0;j<author.size();j++)
-			{
-				this.write_to_client(author.get(j));
-			}
-				this.write_to_client("author");
+			if ( author != null||author.size()>=1) {
+				for(int j=0;j<author.size();j++)
+				{					
+					this.write_to_client(author.get(j));
+				}
+					this.write_to_client("author");
 			}
 			else 
 				this.write_to_client("null");
@@ -311,37 +303,60 @@ public class Controller_Server_SearchPhim {
 			
 			//Gửi review
 			ArrayList<String> review = API.arraymovie.get(i).getReview();
-			if ( review != null) {
-			for(int j=0;j<review.size();j++)
-			{
-				this.write_to_client(review.get(j));
-			}
-			this.write_to_client("review");
+			if ( review != null||review.size()>=1) {
+				for(int j=0;j<review.size();j++)
+				{					
+					this.write_to_client(review.get(j));
+				}
+				this.write_to_client("review");
 			}	
 			else this.write_to_client("null");
 			
 			//Gửi cast
 			ArrayList<String> casr = API.arraymovie.get(i).getCast();
-			if ( casr != null) {
-			for(int j=0;j<casr.size();j++)
-			{
-				this.write_to_client(casr.get(j));
-			}
-			this.write_to_client("cast");
-			}	
+			if ( casr != null || casr.size()>=1 ) {
+				for(int j=0;j<casr.size();j++)
+				{
+					this.write_to_client(casr.get(j));
+				}
+				this.write_to_client("cast");
+				}	
 			else this.write_to_client("null");
 			
 			//Gửi crew
 			ArrayList<String> crew = API.arraymovie.get(i).getCrew();
-			if ( crew != null) {
-			for(int j=0;j<crew.size();j++)
-			{
-				this.write_to_client(crew.get(j));
-			}			
-			this.write_to_client("crew");
-			}	
+			if ( crew != null ||crew.size()>=1) {
+				for(int j=0;j<crew.size();j++)
+				{
+					this.write_to_client(crew.get(j));
+				}			
+				this.write_to_client("crew");
+				}	
 			else this.write_to_client("null");
 			
+			//Gửi thể loại
+			ArrayList<String> theloai = API.arraymovie.get(i).getTheLoai();
+			if ( theloai != null ||theloai.size()>=1) {
+				for(int j=0;j<theloai.size();j++)
+				{
+					this.write_to_client(theloai.get(j));
+				}
+				this.write_to_client("theloai");
+			}
+			else 
+				this.write_to_client("null");
+			
+			//Gửi công ty
+			ArrayList<String> company = API.arraymovie.get(i).getCompany();
+			if ( company != null ||theloai.size()>=1) {
+				for(int j=0;j<company.size();j++)
+				{
+					this.write_to_client(company.get(j));
+				}
+				this.write_to_client("company");
+			}
+			else 
+				this.write_to_client("null");
 		}
 		this.write_to_client("end");				
 	}

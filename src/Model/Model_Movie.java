@@ -13,6 +13,8 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.StringTokenizer;
+
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
 
@@ -35,6 +37,10 @@ public class Model_Movie {
 	private ArrayList<String> crew   = new ArrayList();
 	private String			keytrailer;
 	private String			nametrailer;
+	private ArrayList<String> theloai = new ArrayList();
+	private ArrayList<String> company = new ArrayList();
+	private String	doanhthu;
+	private String  ngansach;
 	
 	public Model_Movie() {
 		
@@ -94,6 +100,11 @@ public class Model_Movie {
 	public void setCrew(ArrayList<String> cast)	{this.crew = cast;}
 	public void setKeyTrailer(String key)		{this.keytrailer = key;}
 	public void setNameTrailer(String key)		{this.nametrailer = key;}
+	public void setTheLoai(ArrayList<String> theloai) {this.theloai = theloai;}
+	public void setCompany(ArrayList<String> company) {this.company = company;}
+	public void setDoanhthu(String revenue)		{this.doanhthu = revenue;}
+	public void setNgansach(String budget)		{this.ngansach = budget; }
+	
 	
 	public String getId()						{return this.id;}
 	public String getTitle()					{return this.title;}
@@ -112,17 +123,19 @@ public class Model_Movie {
 	public ArrayList<String> getCrew()			{return this.crew;}
 	public String getKeyTrailer()				{return this.keytrailer;}
 	public String getNameTrailer()				{return this.nametrailer;}	
+	public ArrayList<String> getCompany()		{return this.company;} 
+	public ArrayList<String> getTheLoai()		{return this.theloai;}
+	public String getDoanhthu()					{return this.doanhthu;}
+	public String getNgansach()					{return this.ngansach;}
 	
-	
-	public  byte[] getBinary(Object obj) {
-        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                ObjectOutputStream out = new ObjectOutputStream(bos)) {
-            out.writeObject(obj);
-            return bos.toByteArray();
-        } catch (IOException ex) {
-        }
-        return null;
-    }
+	public String getTheLoai_ToString()			{
+		String temp = "";
+		if(this.theloai.size()<1)
+			return "null";
+		for(int i=0; i<this.theloai.size();i++)
+			temp += this.theloai.get(i) +", ";
+		return temp;
+	}
 	
 	public String getCast_ToString()
 	{
@@ -153,6 +166,17 @@ public class Model_Movie {
 		return temp;
 	}
 
+	public String getCompany_ToString() {
+		String temp = "";
+		if(this.company == null || this.company.size() < 1)
+			return "null";
+		for(int i=0; i<this.company.size();i++)
+			temp += this.company.get(i) +", ";
+		return temp;
+	}
+
+	
+	//============Hàm xử lý poster
 	public byte[] convert_to_byte() {				
 		 BufferedImage bufferedImage = this.getPoster_image();
 		 // get DataBufferBytes from Raster
@@ -161,9 +185,27 @@ public class Model_Movie {
 		 return ( data.getData() );
 	}
 	
+	public byte[] convert_to_byte2() {
+		String temp = this.poster_path;
+		StringTokenizer token = new StringTokenizer(temp, ".", false);
+		token.nextToken();
+		String format = token.nextToken();
+		BufferedImage bi = this.getPoster_image();
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			ImageIO.write(bi, format, baos);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		  byte[] bytes = baos.toByteArray();
+		  return bytes;
+	}
+	
+	
 	public  String encodeImage() {
-		byte[] temp = this.convert_to_byte();
-        return Base64.getEncoder().encode(temp).toString();
+		byte[] temp = this.convert_to_byte2();
+		return Base64.getEncoder().encodeToString(temp);
+        //return Base64.getEncoder().encode(temp).toString();
     }
 	
 	public byte[] decodeImage(String imageDataString) {
@@ -176,4 +218,14 @@ public class Model_Movie {
         BufferedImage newBi = ImageIO.read(is);
         this.poster_image = newBi;
 	}
+	
+	public  byte[] getBinary(Object obj) {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                ObjectOutputStream out = new ObjectOutputStream(bos)) {
+            out.writeObject(obj);
+            return bos.toByteArray();
+        } catch (IOException ex) {
+        }
+        return null;
+    }
 }

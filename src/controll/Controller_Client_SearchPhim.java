@@ -47,26 +47,7 @@ public class Controller_Client_SearchPhim {
 				out.newLine();
 				out.flush();
 			}
-//			//Communicate
-//			while(true)
-//			{				
-//				over = input.readLine();
-//
-//				//Send to server
-//				out.write(over);
-//				out.newLine();
-//				out.flush();
-//				
-//				//Receive from server
-//				receive = this.Receiver(receive);
-//				
-//				if (receive.equals("bye")||receive.equals("exception"))
-//					break;
-//			}		
 			
-			//Close
-//			input.close();	
-//			Close_Client();
 		} catch (IOException e) {
 			System.out.println("IOException!!");
 			System.out.println("Close");
@@ -95,53 +76,113 @@ public class Controller_Client_SearchPhim {
 				if (receive.equals("fail_input"))
 					return "fail_input";
 				Model_Movie movie = new Model_Movie();
-				movie.setId(receive);
+				movie.setId(receive);	//Gắn id
 				receive = in.readLine();
-				movie.setTitle(receive);
+				movie.setTitle(receive);	//Gắn title
 				receive = in.readLine();
-				movie.setOverview(receive);
+				movie.setOri(receive);	//Gắn ngôn ngữ
 				receive = in.readLine();
-				movie.setVote_av(receive);
+				movie.setDate(receive);	//Gắn release date
 				receive = in.readLine();
-				movie.setVote_count(receive);
-//				receive = in.readLine();
-//				movie.convert_to_image(receive);
+				movie.setOverview(receive);	//Gắn mô tả
 				receive = in.readLine();
-				movie.poster_path_url = receive;
+				movie.setVote_av(receive);	//Gắn vote
 				receive = in.readLine();
-				movie.setKeyTrailer(receive); 
+				movie.setVote_count(receive);	//Gắn vote
+				receive = in.readLine();
+				movie.setNgansach(receive);	//Gắn ngân sách
+				receive = in.readLine();
+				movie.setDoanhthu(receive);	//Gắn doanh thu
+				
+				receive = in.readLine();	//gắn poster
+				if (receive.equals("null"))
+					movie.setPoster_image(null);
+				else
+					movie.convert_to_image(receive);				
+				receive = in.readLine();
+				movie.poster_path_url = receive;	//Gắn posterpath
+				receive = in.readLine();
+				movie.setKeyTrailer(receive); 		//Gắn key trailer
+				
+				//Tạo các arraylist để lưu dữ liệu vào và add vào Object Movie
 				ArrayList<String> authorr = new ArrayList();
 				ArrayList<String> review  = new ArrayList();
 				ArrayList<String> cast  = new ArrayList();
 				ArrayList<String> crew  = new ArrayList();
+				ArrayList<String> theloai  = new ArrayList();
+				ArrayList<String> company  = new ArrayList();
 				while (true) {
 					receive = in.readLine();
-					if(receive.equals("author")||receive.equals("null"))
+					if(receive.equals("null"))
+					{
+						authorr.add("null");	//Nếu null thì add chữ null để hiện ra màn hình
 						break;
+					}
+					if(receive.equals("author"))//Ký hiệu ngắt author-review
+						break;					
 					authorr.add(receive);
 				}
 				while (true) {
 					receive = in.readLine();
-					if(receive.equals("review")||receive.equals("null"))
+					if(receive.equals("null"))
+					{
+						review.add("null");
 						break;
-					review.add(receive);
+					}
+					if(receive.equals("review"))//Ký hiệu ngắt review
+						break;			
+					review.add(receive);					
 				}
 				while (true) {
 					receive = in.readLine();
-					if(receive.equals("cast")||receive.equals("null"))
+					if(receive.equals("null"))
+					{
+						cast.add("null");
 						break;
+					}
+					if(receive.equals("cast"))//Ký hiệu ngắt cast
+						break;	
 					cast.add(receive);
 				}
 				while (true) {
 					receive = in.readLine();
-					if(receive.equals("crew")||receive.equals("null"))
+					if(receive.equals("null"))
+					{
+						crew.add("null");
 						break;
+					}
+					if(receive.equals("crew"))//Ký hiệu ngắt crew
+						break;	
 					crew.add(receive);
+				}
+				while (true) {
+					receive = in.readLine();
+					if(receive.equals("null"))
+					{
+						theloai.add("null");
+						break;
+					}
+					if(receive.equals("theloai"))//Ký hiệu ngắt thể loại
+						break;	
+					theloai.add(receive);
+				}
+				while (true) {
+					receive = in.readLine();
+					if(receive.equals("null"))
+					{
+						company.add("null");
+						break;
+					}
+					if(receive.equals("company"))//Ký hiệu ngắt acompany
+						break;	
+					company.add(receive);
 				}
 				movie.setAuthor(authorr);
 				movie.setReview(review);
 				movie.setCast(cast);
 				movie.setCrew(crew);
+				movie.setTheLoai(theloai);
+				movie.setCompany(company);
 				listmovie.add(movie);		
 		}								
 	}

@@ -2,7 +2,11 @@ package View;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+
 import API.ParseJsonFromAPI;
 import Model.Model_Movie;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
@@ -11,10 +15,12 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import javax.swing.*;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import de.javasoft.synthetica.dark.SyntheticaDarkLookAndFeel;
@@ -24,17 +30,23 @@ public class GUI_Client_Search extends JFrame {
 
 	private JPanel       contentPane;
 	private JTextField   txtTimKiem;
-	private JTextField   txtMoTa;
-	private JTextField   txtDaoDien;
-	private JTextField   txtTenPhim;
-	private JTextField   txtDienVien;
-	private JTextField   txtNoiDung;
+	private JTextArea    txtMoTa;
+	private JTextArea    txtDaoDien;
+	private JTextArea    txtTenPhim;
+	private JTextArea    txtDienVien;
+	private JTextArea    txtReview;
 	private JButton  	 btnTimKiem;
 	private JButton		 btnQuayLai;	
 	private JButton		 runtrailer;	
-	private JTextField txttheloai;
-	private JTextField txtvote;
-	private JTextField txtpoint;
+	private JTextArea 	 txttheloai;
+	private JTextArea	 txtCompany;
+	private JTextField   txtlanguage;
+	private JTextField	 txtReleasedate;
+	private JTextField	 txtNgansach;
+	private JTextField	 txtDoanhthu;
+	private JTextField 	 txtvote;
+	private JTextField 	 txtpoint;
+	private JLabel		 poster;
 
 	public static void main(String[] args) {
 		try
@@ -112,7 +124,7 @@ public class GUI_Client_Search extends JFrame {
 				
 			}
 		});
-		setBounds(100, 100, 1090, 652);
+		setBounds(100, 100, 795, 615);
 		setLocationRelativeTo(null);
         setResizable(false);
 		contentPane = new JPanel();
@@ -122,93 +134,96 @@ public class GUI_Client_Search extends JFrame {
 		contentPane.setLayout(null);
 
 		JPanel panel = new JPanel();
-		panel.setBounds(5, 5, 1077, 119);
+		panel.setBounds(5, 5, 785, 80);		
 		contentPane.add(panel);
 		panel.setLayout(null);
 
-		JLabel lblNewLabel = new JLabel("TRANG T\u00CCM KI\u1EBEM PHIM");
-		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 17));
-		lblNewLabel.setBounds(21, 10, 229, 43);
+		JLabel lblNewLabel = new JLabel("TRANG THÔNG TIN PHIM");
+		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 20));
+		lblNewLabel.setBounds(250, 10, 400, 43);		
 		panel.add(lblNewLabel);
-
-		JLabel lblNewLabel_1 = new JLabel("Nh\u1EADp t\u00EAn phim:");
-		lblNewLabel_1.setFont(new Font("Times New Roman", Font.PLAIN, 15));
-		lblNewLabel_1.setBounds(21, 67, 115, 19);
-		panel.add(lblNewLabel_1);
-
-		txtTimKiem = new JTextField();
-		txtTimKiem.setBounds(146, 64, 473, 28);
-		panel.add(txtTimKiem);
-		txtTimKiem.setColumns(10);
-
-		btnTimKiem = new JButton("T\u00ECm ki\u1EBFm");
-		btnTimKiem.setFont(new Font("Times New Roman", Font.PLAIN, 15));
-		btnTimKiem.setBounds(629, 66, 115, 21);
-		panel.add(btnTimKiem);
 		
-		runtrailer = new JButton("Chạy trailer");
-		runtrailer.setBounds(700, 66, 115, 21);
-		panel.add(runtrailer);		
-		
-
+		Border blackline = BorderFactory.createLineBorder(Color.BLACK);        
+        TitledBorder title;
+        title = BorderFactory.createTitledBorder(blackline,"THÔNG TIN PHIM");
+        title.setTitleJustification(TitledBorder.CENTER);
+        title.setTitleColor(Color.WHITE);
+        title.setTitleFont(new Font("Times New Roman", Font.BOLD,18));
+        
 		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(5, 132, 273, 450);
+		panel_1.setBounds(5, 95, 495, 450);
 		contentPane.add(panel_1);
+		panel_1.setBorder(title);
 		panel_1.setLayout(null);
-
-		JLabel lblNewLabel_2 = new JLabel("TH\u00D4NG TIN PHIM");
-		lblNewLabel_2.setFont(new Font("Times New Roman", Font.BOLD, 15));
-		lblNewLabel_2.setBounds(69, 10, 149, 23);
-		panel_1.add(lblNewLabel_2);
+		
+		
+//		JLabel lblNewLabel_2 = new JLabel("TH\u00D4NG TIN PHIM");
+//		lblNewLabel_2.setFont(new Font("Times New Roman", Font.BOLD, 15));
+//		lblNewLabel_2.setBounds(69, 10, 149, 23);
+//		panel_1.add(lblNewLabel_2);
 
 		JLabel lblNewLabel_1_6 = new JLabel("Tên Phim:");
 		lblNewLabel_1_6.setFont(new Font("Times New Roman", Font.PLAIN, 15));
-		lblNewLabel_1_6.setBounds(5, 50, 100, 19);
+		lblNewLabel_1_6.setBounds(5, 45, 100, 19);
 		panel_1.add(lblNewLabel_1_6);
 
-		txtTenPhim = new JTextField();
-		txtTenPhim.setBounds(70, 50, 190, 30);
-		txtTenPhim.setColumns(10);
+		JScrollPane jScrollPane6 = new JScrollPane();
+		txtTenPhim = new JTextArea();		
+		txtTenPhim.setWrapStyleWord(true);
+		txtTenPhim.setLineWrap(true);
 		txtTenPhim.setEditable(false);
-		panel_1.add(txtTenPhim);
+		jScrollPane6.setViewportView(txtTenPhim);
+		jScrollPane6.setBounds(70, 45, 190, 35);
+		panel_1.add(jScrollPane6);
+		
 		
 		JLabel lblNewLabel_1_2 = new JLabel("M\u00F4 t\u1EA3:");
 		lblNewLabel_1_2.setFont(new Font("Times New Roman", Font.PLAIN, 15));
-		lblNewLabel_1_2.setBounds(5, 110, 50, 19);
+		lblNewLabel_1_2.setBounds(5, 95, 50, 19);
 		panel_1.add(lblNewLabel_1_2);
 
-		txtMoTa = new JTextField(10);
-		txtMoTa.setBounds(49, 110, 211, 86);
-		txtMoTa.setColumns(10);
+		JScrollPane jScrollPane5 = new JScrollPane();
+		txtMoTa = new JTextArea();		
+		txtMoTa.setWrapStyleWord(true);
+		txtMoTa.setLineWrap(true);
 		txtMoTa.setEditable(false);
-		panel_1.add(txtMoTa);
+		jScrollPane5.setViewportView(txtMoTa);
+		jScrollPane5.setBounds(49, 95, 211, 60);
+		panel_1.add(jScrollPane5);
+
 
 		JLabel lblNewLabel_1_2_1 = new JLabel("\u0110\u1EA1o di\u1EC5n:");
 		lblNewLabel_1_2_1.setFont(new Font("Times New Roman", Font.PLAIN, 15));
-		lblNewLabel_1_2_1.setBounds(5, 210, 75, 19);
+		lblNewLabel_1_2_1.setBounds(5, 170, 75, 19);
 		panel_1.add(lblNewLabel_1_2_1);
 
 		JLabel lblNewLabel_1_2_1_1 = new JLabel("Diễn viên:");
 		lblNewLabel_1_2_1_1.setFont(new Font("Times New Roman", Font.PLAIN, 15));
-		lblNewLabel_1_2_1_1.setBounds(5, 250, 80, 19);
+		lblNewLabel_1_2_1_1.setBounds(5, 240, 80, 19);
 		panel_1.add(lblNewLabel_1_2_1_1);
 
-		txtDaoDien = new JTextField(10);
-		txtDaoDien.setBounds(66, 210, 194, 25);
-		txtDaoDien.setColumns(10);
+		JScrollPane jScrollPane3 = new JScrollPane();
+		txtDaoDien = new JTextArea();		
+		txtDaoDien.setWrapStyleWord(true);
+		txtDaoDien.setLineWrap(true);
 		txtDaoDien.setEditable(false);
-		panel_1.add(txtDaoDien);
-
-
-		txtDienVien = new JTextField(10);
-		txtDienVien.setColumns(10);
-		txtDienVien.setBounds(69, 250, 191, 65);
+		jScrollPane3.setViewportView(txtDaoDien);
+		jScrollPane3.setBounds(66, 170, 194, 55);
+		panel_1.add(jScrollPane3);
+		
+		JScrollPane jScrollPane4 = new JScrollPane();
+		txtDienVien = new JTextArea();		
+		txtDienVien.setWrapStyleWord(true);
+		txtDienVien.setLineWrap(true);
 		txtDienVien.setEditable(false);
-		panel_1.add(txtDienVien);
+		jScrollPane4.setViewportView(txtDienVien);
+		jScrollPane4.setBounds(69, 240, 191, 65);
+		panel_1.add(jScrollPane4);
+		
 		
 		JLabel lblNewLabel_1_2_1_1_2 = new JLabel("Thể loại:");
 		lblNewLabel_1_2_1_1_2.setFont(new Font("Times New Roman", Font.PLAIN, 15));
-		lblNewLabel_1_2_1_1_2.setBounds(5, 335, 80, 19);
+		lblNewLabel_1_2_1_1_2.setBounds(5, 315, 80, 19);
 		panel_1.add(lblNewLabel_1_2_1_1_2);
 		
 		JLabel lblNewLabel_1_2_1_1_2_1 = new JLabel("Lượng vote:");
@@ -216,11 +231,15 @@ public class GUI_Client_Search extends JFrame {
 		lblNewLabel_1_2_1_1_2_1.setBounds(5, 365, 80, 19);
 		panel_1.add(lblNewLabel_1_2_1_1_2_1);
 		
-		txttheloai = new JTextField(20);
+		JScrollPane jScrollPane2 = new JScrollPane();
+		txttheloai = new JTextArea();
+		txttheloai.setWrapStyleWord(true);
+		txttheloai.setLineWrap(true);
 		txttheloai.setEditable(false);
-		txttheloai.setColumns(10);
-		txttheloai.setBounds(110, 330, 150, 25);
-		panel_1.add(txttheloai);
+		jScrollPane2.setViewportView(txttheloai);
+		jScrollPane2.setBounds(110, 315, 150, 40);
+		panel_1.add(jScrollPane2);
+		
 		
 		txtvote = new JTextField();
 		txtvote.setEditable(false);
@@ -237,28 +256,82 @@ public class GUI_Client_Search extends JFrame {
 		txtpoint.setEditable(false);
 		txtpoint.setColumns(10);
 		txtpoint.setBounds(110, 396, 150, 20);
-		panel_1.add(txtpoint);
+		panel_1.add(txtpoint);		
+		
+		JLabel label1 = new JLabel("Ngân sách:");
+		label1.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		label1.setBounds(270, 45, 100, 19);
+		panel_1.add(label1);
 
-		JPanel panel_2 = new JPanel();
-		panel_2.setBounds(287, 132, 500, 450);
-		contentPane.add(panel_2);
-		panel_2.setLayout(null);
+		txtNgansach = new JTextField();			
+		txtNgansach.setColumns(10);
+		txtNgansach.setEditable(false);		
+		txtNgansach.setBounds(350, 45, 135, 30);
+		panel_1.add(txtNgansach);
+		
+		JLabel label2 = new JLabel("Doanh thu:");
+		label2.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		label2.setBounds(270, 95, 100, 19);
+		panel_1.add(label2);
 
-		JLabel lblNewLabel_2_1 = new JLabel("TRAILER PHIM");
-		lblNewLabel_2_1.setFont(new Font("Times New Roman", Font.BOLD, 15));
-		lblNewLabel_2_1.setBounds(195, 10, 134, 23);
-		panel_2.add(lblNewLabel_2_1);
+		txtDoanhthu = new JTextField();			
+		txtDoanhthu.setColumns(10);
+		txtDoanhthu.setEditable(false);		
+		txtDoanhthu.setBounds(350, 95, 135, 30);
+		panel_1.add(txtDoanhthu);
+		
+		JLabel label3 = new JLabel("Ngày p/hành");
+		label3.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		label3.setBounds(270, 145, 100, 19);
+		panel_1.add(label3);
+
+		txtReleasedate = new JTextField();			
+		txtReleasedate.setColumns(10);
+		txtReleasedate.setEditable(false);		
+		txtReleasedate.setBounds(350, 145, 135, 30);
+		panel_1.add(txtReleasedate);
+		
+		JLabel label4 = new JLabel("Công ty:");
+		label4.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		label4.setBounds(270, 195, 100, 19);
+		panel_1.add(label4);
+
+		JScrollPane jScrollPane7 = new JScrollPane();
+		txtCompany = new JTextArea();
+		txtCompany.setWrapStyleWord(true);
+		txtCompany.setLineWrap(true);
+		txtCompany.setEditable(false);
+		jScrollPane7.setViewportView(txtCompany);
+		jScrollPane7.setBounds(350, 195, 135, 30);
+		panel_1.add(jScrollPane7);
+		
+		JLabel label5 = new JLabel("Ngôn ngữ:");
+		label5.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		label5.setBounds(270, 245, 100, 19);
+		panel_1.add(label5);
+
+		txtlanguage = new JTextField();			
+		txtlanguage.setColumns(10);
+		txtlanguage.setEditable(false);		
+		txtlanguage.setBounds(350, 245, 135, 30);
+		panel_1.add(txtlanguage);
+		
+		runtrailer = new JButton("CHẠY TRAILER");
+		runtrailer.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		runtrailer.setBounds(270, 365, 215, 50);
+		panel_1.add(runtrailer);	
 		
 		
 		
+		//Panel review phim ========================================================
 		JPanel panel_3 = new JPanel();
-		panel_3.setBounds(796, 132, 285, 450);
+		panel_3.setBounds(505, 95, 285, 450);
 		contentPane.add(panel_3);
 		panel_3.setLayout(null);
 
 		JLabel lblNewLabel_2_2 = new JLabel("REVIEW PHIM");
 		lblNewLabel_2_2.setFont(new Font("Times New Roman", Font.BOLD, 15));
-		lblNewLabel_2_2.setBounds(87, 10, 134, 23);
+		lblNewLabel_2_2.setBounds(90, 10, 135, 23);
 		panel_3.add(lblNewLabel_2_2);
 
 		JLabel lblNewLabel_1_2_1_1_1 = new JLabel("Review:");
@@ -266,25 +339,27 @@ public class GUI_Client_Search extends JFrame {
 		lblNewLabel_1_2_1_1_1.setBounds(10, 271, 80, 20);
 		panel_3.add(lblNewLabel_1_2_1_1_1);
 
-		txtNoiDung = new JTextField();
-		txtNoiDung.setBounds(10, 301, 265, 139);
-		txtNoiDung.setEditable(false);
-		txtNoiDung.setColumns(10);
-		panel_3.add(txtNoiDung);
+		JScrollPane jScrollPane1 = new JScrollPane();
+		txtReview = new JTextArea();
+		txtReview.setLineWrap(true);
+		txtReview.setWrapStyleWord(true);
+		txtReview.setEditable(false);	
+		jScrollPane1.setViewportView(txtReview);
+		jScrollPane1.setBounds(10, 301, 255, 130);
+		panel_3.add(jScrollPane1);
 
-
-		JLabel lblNewLabel_3 = new JLabel("New label");
-		lblNewLabel_3.setIcon(new ImageIcon(".\\Image\\img_1.jpg"));
-		lblNewLabel_3.setBounds(37, 43, 210, 210);
-		panel_3.add(lblNewLabel_3);
+		//POSTER
+		poster = new JLabel("New label");		
+		poster.setBounds(37, 43, 210, 210);
+		panel_3.add(poster);
 
 		JPanel panel_4 = new JPanel();
-		panel_4.setBounds(5, 587, 1077, 33);
+		panel_4.setBounds(5, 550, 790, 33);
 		contentPane.add(panel_4);
 		panel_4.setLayout(null);
 
 		btnQuayLai = new JButton("Quay l\u1EA1i");
-		btnQuayLai.setBounds(960, 5, 103, 25);
+		btnQuayLai.setBounds(680, 5, 100, 25);
 		panel_4.add(btnQuayLai);
 		btnQuayLai.setFont(new Font("Times New Roman", Font.PLAIN, 14));
 
@@ -295,7 +370,6 @@ public class GUI_Client_Search extends JFrame {
 
 		//Add function
 		Function_Back(this);
-		Function_Find(this);
 		Load_from_int_i(i);
 		RunTrailer(this, i);
 		CloseFrame(this);
@@ -313,26 +387,40 @@ public class GUI_Client_Search extends JFrame {
 		});
 	}
 
-	public void Function_Find(JFrame a) {
-		btnTimKiem.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				ListFrame list = new ListFrame();
-				list.setVisible(true);
-				a.dispose();
-			}
-		});				
-	}
-
 	public void Load_from_int_i(int i) {
 		Model_Movie a =  ListFrame.controller.listmovie.get(i);
-		txtMoTa.setText(a.getOverview());
-		txtDaoDien.setText(a.getCrew_ToString());
+		txtMoTa.append(a.getOverview());
+		txtDaoDien.append(a.getCrew_ToString());
 		txtTenPhim.setText(a.getTitle());;
-		txtDienVien.setText(a.getCast_ToString());
-		txtNoiDung.setText(a.getReview_ToString());			
+		txtDienVien.append(a.getCast_ToString());
+		for(int q=0;q<a.getReview().size();q++)
+		{
+			String temp = a.getAuthor().get(q) +":" +a.getReview().get(q);			
+			txtReview.append(temp);
+			txtReview.append("\n");
+		}
 		txtvote.setText(a.getVote_count());
 		txtpoint.setText(a.getVote_av());
+		for(int q=0;q<a.getTheLoai().size();q++)
+		{	
+			txttheloai.append(a.getTheLoai().get(q));
+		}
+		for(int q=0;q<a.getCompany().size();q++)
+		{	
+			txtCompany.append(a.getCompany().get(q));
+		}
+		txtNgansach.setText(a.getNgansach());
+		txtDoanhthu.setText(a.getDoanhthu());
+		txtReleasedate.setText(a.getDate());
+		txtlanguage.setText(a.getOri());		
+		BufferedImage temp = a.getPoster_image();
+		if(temp!=null) {
+			Image dimg = temp.getScaledInstance(poster.getWidth(), poster.getHeight(),
+			        Image.SCALE_SMOOTH);
+			poster.setIcon(new ImageIcon(dimg));
+		}
+		else
+			poster.setIcon(new ImageIcon(".\\Image\\img_1.jpg"));
 	}
 
 	public void RunTrailer(JFrame a,int i)
