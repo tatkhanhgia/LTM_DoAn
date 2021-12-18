@@ -29,6 +29,7 @@ public class MainView extends JFrame {
 	private JPanel contentPane;
 	private RunMedia_BackGround a ;
 	private int flagstop = 0;
+	public static Controller_Client_SearchPhim controller=null;
 	/**
 	 * Launch the application.
 	 */
@@ -53,6 +54,8 @@ public class MainView extends JFrame {
 				try {
 					MainView frame = new MainView();
 					frame.setVisible(true);
+//					controller = new Controller_Client_SearchPhim();
+//					controller.Open_Client("localhost", 6000);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -64,6 +67,11 @@ public class MainView extends JFrame {
 	 * Create the frame.
 	 */
 	public MainView() {
+		if(controller == null)
+		{
+			controller = new Controller_Client_SearchPhim();
+			controller.Open_Client("localhost", 6000);			
+		}
 		setResizable(false);
 		setTitle("ỨNG DỤNG SEARCH PHIM & XỬ LÝ ẢNH");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -224,10 +232,9 @@ public class MainView extends JFrame {
 		btnXLPhim.addActionListener(new  ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				controller.send_text("phim");
 				ListFrame phim = new ListFrame();
 				phim.setVisible(true);
-				ListFrame.controller = new Controller_Client_SearchPhim();
-				ListFrame.controller.Open_Client("localhost", 6000);
 				frame.dispose();
 			}
 		});
@@ -273,6 +280,7 @@ public class MainView extends JFrame {
 		btnXLAnh.addActionListener(new  ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				controller.send_text("anh");
 				GUI_Client_XuLyAnh a = new GUI_Client_XuLyAnh();
 				a.setVisible(true);
 				frame.dispose();

@@ -1,6 +1,6 @@
-package Detection.emaraic;
+package View;
 
-import Detection.esotericsoftware.tablelayout.swing.Table;
+//import com.esotericsoftware.tablelayout.swing.Table;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,14 +23,26 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import Detection.code.Table;
 import org.tensorflow.DataType;
 import org.tensorflow.Graph;
 import org.tensorflow.Output;
 import org.tensorflow.Session;
 import org.tensorflow.Tensor;
 
+/**
+ *
+ * @author Taha Emara
+ * Website: http://www.emaraic.com
+ * Email : taha@emaraic.com
+ * Created on: Apr 29, 2017
+ * Kindly: Don't remove this header
+ * Download the pre-trained inception model from here: https://storage.googleapis.com/download.tensorflow.org/models/inception_dec_2015.zip
+ */
 //Demo : https://www.youtube.com/watch?v=hFzAA0xHbZA&t=153s
-public class Recognizer extends JFrame implements ActionListener {
+public class FrameDetection extends JFrame implements ActionListener {
+
     private Table table;
     private JButton predict;
     private JButton incep;
@@ -43,14 +55,14 @@ public class Recognizer extends JFrame implements ActionListener {
     private JTextField modelpth;
     private FileNameExtensionFilter imgfilter = new FileNameExtensionFilter(
             "JPG & JPEG Images", "jpg", "jpeg");
-    private String modelpath;
+    private String modelpath = ".\\scr\\Detection\\inception_dec_2015";
     private String imagepath;
-    private boolean modelselected = false;
-    private byte[] graphDef;
-    private List<String> labels;
+    private boolean modelselected = true;
+    private byte[] graphDef = readAllBytesOrExit(Paths.get(modelpath, "tensorflow_inception_graph.pb"));    
+    private List<String> labels = readAllLinesOrExit(Paths.get(modelpath, "imagenet_comp_graph_label_strings.txt"));
 
-    public Recognizer() {
-        setTitle("Object Recognition - Emaraic.com");
+    public FrameDetection() {
+        setTitle("Object Recognitio");
         setSize(500, 500);
         table = new Table();
 
@@ -101,23 +113,8 @@ public class Recognizer extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        if (e.getSource() == incep) {
-            int returnVal = incepch.showOpenDialog(this);
-
-            if (returnVal == JFileChooser.APPROVE_OPTION) {
-                File file = incepch.getSelectedFile();
-                modelpath = file.getAbsolutePath();
-                modelpth.setText(modelpath);
-                System.out.println("Opening: " + file.getAbsolutePath());
-                modelselected = true;
-                graphDef = readAllBytesOrExit(Paths.get(modelpath, "tensorflow_inception_graph.pb"));
-                labels = readAllLinesOrExit(Paths.get(modelpath, "imagenet_comp_graph_label_strings.txt"));
-            } else {
-                System.out.println("Process was cancelled by user.");
-            }
-
-        } else if (e.getSource() == img) {
-            int returnVal = imgch.showOpenDialog(Recognizer.this);
+    		if (e.getSource() == img) {
+            int returnVal = imgch.showOpenDialog(FrameDetection.this);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 try {
                     File file = imgch.getSelectedFile();
@@ -131,7 +128,7 @@ public class Recognizer extends JFrame implements ActionListener {
                         predict.setEnabled(true);
                     }
                 } catch (IOException ex) {
-                    Logger.getLogger(Recognizer.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(FrameDetection.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
                 System.out.println("Process was cancelled by user.");
@@ -262,7 +259,7 @@ public class Recognizer extends JFrame implements ActionListener {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new Recognizer().setVisible(true);
+                new FrameDetection().setVisible(true);
 
             }
         });

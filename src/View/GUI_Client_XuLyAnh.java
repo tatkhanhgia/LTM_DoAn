@@ -6,22 +6,47 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileFilter;
 
+import Model.Model_Image;
+import controll.Controller_Client_SearchPhim;
 import de.javasoft.synthetica.dark.SyntheticaDarkLookAndFeel;
 
 import java.awt.Color;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.StringTokenizer;
 
+import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 
 public class GUI_Client_XuLyAnh extends JFrame {
 
 	private JPanel contentPane;
-
+	private JButton compress, gray, resize,format, detec,api,upload,save;
+	private String path = "null";
+	private String extension = "null";
+	private JLabel image;
+	private Model_Image model_image = new Model_Image();
+	private Controller_Client_SearchPhim controll ;
 	/**
 	 * Launch the application.
 	 */
@@ -45,7 +70,7 @@ public class GUI_Client_XuLyAnh extends JFrame {
 			public void run() {
 				try {
 					GUI_Client_XuLyAnh frame = new GUI_Client_XuLyAnh();
-					frame.setVisible(true);
+					frame.setVisible(true);					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -57,39 +82,131 @@ public class GUI_Client_XuLyAnh extends JFrame {
 	 * Create the frame.
 	 */
 	public GUI_Client_XuLyAnh() {
+		controll= new Controller_Client_SearchPhim();
+		controll.Open_Client("localhost", 6000);
+		controll.send_text("anh");
 		setTitle("TRANG XỬ LÝ ẢNH");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		this.addWindowListener(new WindowListener() {
+			
+			@Override
+			public void windowOpened(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowIconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+				MainView.controller.send_text("bye");
+				MainView.controller.send_text("bye");
+				MainView.controller.Close_Client();
+				this.windowClosing(e);
+			}
+			
+			@Override
+			public void windowClosed(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowActivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		setBounds(100, 100, 1091, 663);
+		setLocationRelativeTo(null);
+        setResizable(false);
 		contentPane = new JPanel();
 		contentPane.setBackground(Color.LIGHT_GRAY);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+		Border blackline = BorderFactory.createLineBorder(Color.BLACK);        
+        TitledBorder title;
+        title = BorderFactory.createTitledBorder(blackline,"CHỨC NĂNG");
+        title.setTitleJustification(TitledBorder.CENTER);
+        title.setTitleColor(Color.WHITE);
+        title.setTitleFont(new Font("Times New Roman", Font.BOLD,18));
+		
 		JPanel panel = new JPanel();
 		panel.setBounds(5, 5, 1077, 56);
 		contentPane.add(panel);
 		panel.setLayout(null);
 		
-		JButton btnNewButton_1 = new JButton("UPLOAD ẢNH");
-		btnNewButton_1.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-		btnNewButton_1.setBounds(5, 5, 520, 45);
-		panel.add(btnNewButton_1);
+		upload = new JButton("UPLOAD ẢNH");
+		upload.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		upload.setBounds(5, 5, 520, 45);
+		panel.add(upload);
 		
-		JButton btnNewButton_1_1 = new JButton("LƯU ẢNH");
-		btnNewButton_1_1.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-		btnNewButton_1_1.setBounds(550, 5, 520, 45);
-		panel.add(btnNewButton_1_1);
+		save = new JButton("LƯU ẢNH");
+		save.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		save.setBounds(550, 5, 520, 45);
+		panel.add(save);
 		
+		//Phần giao diện ảnh - bên trái						
+		image = new JLabel();
+		image.setBounds(10, 65, 710, 520);		
+		//panelanh.add(image);
+		this.add(image);
+		
+		//Phần chức năng
 		JPanel panel_1 = new JPanel();
 		panel_1.setBounds(728, 65, 354, 520);
-		contentPane.add(panel_1);
+		panel_1.setBorder(title);
+		contentPane.add(panel_1);		
 		panel_1.setLayout(null);
 		
-		JLabel lblNewLabel_1 = new JLabel("Chức năng");
-		lblNewLabel_1.setFont(new Font("Times New Roman", Font.PLAIN, 14));
-		lblNewLabel_1.setBounds(150, 10, 100, 19);
-		panel_1.add(lblNewLabel_1);
+		
+		compress = new JButton("Nén ảnh");
+		compress.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		compress.setBounds(22, 92, 322, 39);
+		panel_1.add(compress);
+		
+		format = new JButton("Format");
+		format.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		format.setBounds(22, 168, 322, 39);
+		panel_1.add(format);
+		
+		gray = new JButton("GrayScale");
+		gray.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		gray.setBounds(22, 245, 322, 39);
+		panel_1.add(gray);
+		
+		resize = new JButton("Resize");
+		resize.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		resize.setBounds(22, 321, 322, 39);
+		panel_1.add(resize);
+		
+		detec = new JButton("Nhận diện ảnh");
+		detec.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		detec.setBounds(22, 397, 322, 39);
+		panel_1.add(detec);
+		
+		api = new JButton("API");
+		api.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+		api.setBounds(22,460 , 322, 39);
+		panel_1.add(api);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBounds(5, 590, 1077, 40);
@@ -115,6 +232,12 @@ public class GUI_Client_XuLyAnh extends JFrame {
 		
 		//Add function
 		this.Function_Back(this, btnNewButton);
+		this.Function_Upload();
+		this.Function_Compress();
+		this.Function_Format();
+		this.Function_Gray();
+		this.Function_Resize();
+		this.Function_Save();
 	}
 	
 	public void Function_Back(JFrame a,JButton btnQuayLai) {
@@ -128,4 +251,257 @@ public class GUI_Client_XuLyAnh extends JFrame {
 		});
 	}
 	
+	public void Function_Upload()
+	{
+		upload.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser file = new JFileChooser();
+				file.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				file.setAcceptAllFileFilterUsed(false);
+				//Cách 1 : Filter những định dạng ảnh
+				file.setFileFilter(new FileFilter() {			
+					@Override
+					public String getDescription() {
+						return null;
+					}				
+					@Override
+					public boolean accept(File f) {
+						if(f.getName().endsWith(".jpg"))
+							return true;
+						if(f.getName().endsWith(".png"))
+							return true;					
+						if(f.getName().endsWith(".jpeg"))
+							return true;
+						if(f.getName().endsWith(".gif"))
+							return true;
+						if(f.getName().endsWith(".raw"))
+							return true;
+						if(f.getName().endsWith(".tiff"))
+							return true;
+						return false;
+					}
+				});   
+				
+				//Cách 2
+//				FileNameExtensionFilter filter = new FileNameExtensionFilter("MPEG3 songs", "mp3");
+//		        fileChooser.addChoosableFileFilter(filter);		        				
+				int rVal = file.showOpenDialog(null);
+		        if (rVal == JFileChooser.APPROVE_OPTION) {
+		        	     	
+		            String filename = file.getSelectedFile().getName();
+		            String dir = file.getCurrentDirectory().toString();
+		            path = dir+"\\"+filename;		//Get path ảnh
+		            StringTokenizer token = new StringTokenizer(path,".",false);
+		            token.nextToken();
+		            extension = token.nextToken();	//Get đuôi ảnh
+		            File temp1 = new File(path);
+		            BufferedImage temp2;			//Gắn ảnh vào Label
+					try {
+						temp2 = ImageIO.read(temp1);
+						Image dimg = temp2.getScaledInstance(image.getWidth(), image.getHeight(),
+							        Image.SCALE_SMOOTH);
+						image.setIcon(new ImageIcon(dimg));
+						System.out.println("path:"+path);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}		           
+		        }
+		        else
+		        {
+		        	path = "null";
+		        	System.out.println("not accept");
+		        }				
+			}
+		});
+	}
+	
+	public void Function_Compress() {
+		compress.addActionListener(new ActionListener() {		
+			@Override
+			public void actionPerformed(ActionEvent e) {				
+				//Check đã upload ảnh chưa
+				if(path.equals("null"))
+				{
+					JOptionPane.showMessageDialog(null,"Lỗi!Vui lòng upload ảnh!","Lỗi",JOptionPane.CANCEL_OPTION);
+					return;
+				}
+				//Tạo model ảnh để lưu trữ dữ liệu + các hàm chuyển đổi ảnh
+				Model_Image object = new  Model_Image();				
+				object.path = path;
+				String send = object.encodeImage();
+				//Gửi đến server theo định dạng : data - chức năng - saveas(dành cho format) - đuôi extension hiện tại
+				controll.send_text(send);
+				controll.send_text("compress");
+				controll.send_text("null");
+				controll.send_text(extension);
+				//nhận từ server
+				Model_Image result = controll.Receive_Image();
+				if(result == null)
+				{
+					JOptionPane.showMessageDialog(null,"Lỗi!Ảnh không thể chuyển!","Lỗi",JOptionPane.CANCEL_OPTION);
+					return;
+				}				 
+				model_image.buffered = result.buffered;
+				Image dimg = result.buffered.getScaledInstance(image.getWidth(), image.getHeight(),
+					        Image.SCALE_SMOOTH);
+				image.setIcon(new ImageIcon(dimg));		           
+			}
+		});
+	}
+	
+	public void Function_Format() {
+		format.addActionListener(new ActionListener() {		
+			@Override
+			public void actionPerformed(ActionEvent e) {				
+				//Check đã upload ảnh chưa
+				image.setIcon(null);
+				if(path.equals("null"))
+				{
+					JOptionPane.showMessageDialog(null,"Lỗi!Vui lòng upload ảnh!","Lỗi",JOptionPane.CANCEL_OPTION);
+					return;
+				}
+				Object[] option = {"PNG","JPG","TIF","GIF"};
+				int choose = JOptionPane.showOptionDialog(null,"Chọn định dạng ảnh","Định dạng", 
+						JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, option, null);
+				System.out.println("Click:"+choose);
+				
+				//Tạo model ảnh để lưu trữ dữ liệu + các hàm chuyển đổi ảnh
+				Model_Image object = new  Model_Image();				
+				object.path = path;
+				String send = object.encodeImage();
+				//Gửi đến server theo định dạng : data - chức năng - saveas(dành cho format) - đuôi extension hiện tại
+				controll.send_text(send);
+				controll.send_text("format");
+				if (choose==0) controll.send_text("png");
+				if (choose==1) controll.send_text("jpg");
+				if (choose==2) controll.send_text("tif");
+				if (choose==3) controll.send_text("gif");
+				controll.send_text(extension);
+				//nhận từ server
+				Model_Image result = controll.Receive_Image();
+				if(result == null)
+				{
+					JOptionPane.showMessageDialog(null,"Lỗi!Ảnh không thể chuyển!","Lỗi",JOptionPane.CANCEL_OPTION);
+					return;
+				}				 
+				model_image.buffered = result.buffered;
+				Image dimg = result.buffered.getScaledInstance(image.getWidth(), image.getHeight(),
+					        Image.SCALE_SMOOTH);
+				image.setIcon(new ImageIcon(dimg));		           
+			}
+		});		
+	}
+
+	public void Function_Gray() {
+		gray.addActionListener(new ActionListener() {		
+			@Override
+			public void actionPerformed(ActionEvent e) {	
+				image.setIcon(null);
+				//Check đã upload ảnh chưa
+				if(path.equals("null"))
+				{
+					JOptionPane.showMessageDialog(null,"Lỗi!Vui lòng upload ảnh!","Lỗi",JOptionPane.CANCEL_OPTION);
+					return;
+				}
+				//Tạo model ảnh để lưu trữ dữ liệu + các hàm chuyển đổi ảnh
+				Model_Image object = new  Model_Image();				
+				object.path = path;
+				String send = object.encodeImage();
+				//Gửi đến server theo định dạng : data - chức năng - saveas(dành cho format) - đuôi extension hiện tại
+				controll.send_text(send);
+				controll.send_text("gray");
+				controll.send_text("null");
+				controll.send_text(extension);
+				//nhận từ server
+				Model_Image result = controll.Receive_Image();
+				if(result == null)
+				{
+					JOptionPane.showMessageDialog(null,"Lỗi!Ảnh không thể chuyển!","Lỗi",JOptionPane.CANCEL_OPTION);
+					return;
+				}		
+				model_image.buffered = result.buffered;
+				Image dimg = result.buffered.getScaledInstance(image.getWidth(), image.getHeight(),
+					        Image.SCALE_SMOOTH);
+				image.setIcon(new ImageIcon(dimg));		           
+			}
+		});
+	}
+	
+	public void Function_Resize() {
+		resize.addActionListener(new ActionListener() {		
+			@Override
+			public void actionPerformed(ActionEvent e) {				
+				//Check đã upload ảnh chưa
+				image.setIcon(null);
+				if(path.equals("null"))
+				{
+					JOptionPane.showMessageDialog(null,"Lỗi!Vui lòng upload ảnh!","Lỗi",JOptionPane.CANCEL_OPTION);
+					return;
+				}
+				Object[] option = {"Small","Medium","Large"};
+				int choose = JOptionPane.showOptionDialog(null,"Chọn định dạng ảnh","Định dạng", 
+						JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, option, null);
+				System.out.println("Click:"+choose);
+				
+				//Tạo model ảnh để lưu trữ dữ liệu + các hàm chuyển đổi ảnh
+				Model_Image object = new  Model_Image();				
+				object.path = path;
+				String send = object.encodeImage();
+				//Gửi đến server theo định dạng : data - chức năng - saveas(dành cho format) - đuôi extension hiện tại
+				controll.send_text(send);
+				controll.send_text("resize");
+				if (choose==0) controll.send_text("small");
+				if (choose==1) controll.send_text("medium");
+				if (choose==2) controll.send_text("large");				
+				controll.send_text(extension);
+				//nhận từ server
+				Model_Image result = controll.Receive_Image();
+				if(result == null)
+				{
+					JOptionPane.showMessageDialog(null,"Lỗi!Ảnh không thể chuyển!","Lỗi",JOptionPane.CANCEL_OPTION);
+					return;
+				}		
+				model_image.buffered = result.buffered;
+				Image dimg = result.buffered.getScaledInstance(image.getWidth(), image.getHeight(),
+					        Image.SCALE_SMOOTH);
+				image.setIcon(new ImageIcon(dimg));		           
+			}
+		});		
+	}
+	
+	public void Function_Save() {
+		save.addActionListener(new ActionListener() {			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser file = new JFileChooser();
+														        		
+				int rVal = file.showSaveDialog(null);
+		        if (rVal == JFileChooser.APPROVE_OPTION) {
+		        	     	
+		            String filename = file.getSelectedFile().getName();
+		            System.out.println("filename:"+filename);
+		            String dir = file.getCurrentDirectory().toString();
+		            System.out.println("dir:"+dir);
+		            String pathsave = dir+"\\"+filename;		            
+		            BufferedImage buffer =model_image.buffered; 
+				    File outputfile = new File(pathsave+"."+extension);
+				    try {
+						ImageIO.write(buffer, extension, outputfile);
+					} catch (IOException e1) {						
+					} 
+				    image.setIcon(null);
+		        }
+		        else
+		        {
+		        	path = "null";
+		        	System.out.println("not accept");
+		        }				
+			}
+		});
+	}
+
+	public void Function_Detect() {
+		
+	}
 }

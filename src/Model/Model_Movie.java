@@ -177,14 +177,6 @@ public class Model_Movie {
 
 	
 	//============Hàm xử lý poster
-	public byte[] convert_to_byte() {				
-		 BufferedImage bufferedImage = this.getPoster_image();
-		 // get DataBufferBytes from Raster
-		 WritableRaster raster = bufferedImage .getRaster();
-		 DataBufferByte data   = (DataBufferByte) raster.getDataBuffer();
-		 return ( data.getData() );
-	}
-	
 	public byte[] convert_to_byte2() {
 		String temp = this.poster_path;
 		StringTokenizer token = new StringTokenizer(temp, ".", false);
@@ -219,13 +211,4 @@ public class Model_Movie {
         this.poster_image = newBi;
 	}
 	
-	public  byte[] getBinary(Object obj) {
-        try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                ObjectOutputStream out = new ObjectOutputStream(bos)) {
-            out.writeObject(obj);
-            return bos.toByteArray();
-        } catch (IOException ex) {
-        }
-        return null;
-    }
 }

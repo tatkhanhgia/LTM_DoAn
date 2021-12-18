@@ -1,4 +1,4 @@
-package Detection.esotericsoftware.tablelayout;
+package Detection.code;
 
 /*******************************************************************************
  * Copyright (c) 2011, Nathan Sweet <nathan.sweet@gmail.com>
@@ -26,8 +26,7 @@ package Detection.esotericsoftware.tablelayout;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-
-import Detection.esotericsoftware.tablelayout.Value.FixedValue;
+//import com.esotericsoftware.tablelayout.Value.FixedValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -309,47 +308,47 @@ abstract public class BaseTableLayout<C, T extends C, L extends BaseTableLayout,
 
     /** Sets the padTop, padLeft, padBottom, and padRight around the table to the specified value. */
     public L pad (float pad) {
-        padTop = new FixedValue(pad);
-        padLeft = new FixedValue(pad);
-        padBottom = new FixedValue(pad);
-        padRight = new FixedValue(pad);
+        padTop = new Value.FixedValue(pad);
+        padLeft = new Value.FixedValue(pad);
+        padBottom = new Value.FixedValue(pad);
+        padRight = new Value.FixedValue(pad);
         sizeInvalid = true;
         return (L)this;
     }
 
     public L pad (float top, float left, float bottom, float right) {
-        padTop = new FixedValue(top);
-        padLeft = new FixedValue(left);
-        padBottom = new FixedValue(bottom);
-        padRight = new FixedValue(right);
+        padTop = new Value.FixedValue(top);
+        padLeft = new Value.FixedValue(left);
+        padBottom = new Value.FixedValue(bottom);
+        padRight = new Value.FixedValue(right);
         sizeInvalid = true;
         return (L)this;
     }
 
     /** Padding at the top edge of the table. */
     public L padTop (float padTop) {
-        this.padTop = new FixedValue(padTop);
+        this.padTop = new Value.FixedValue(padTop);
         sizeInvalid = true;
         return (L)this;
     }
 
     /** Padding at the left edge of the table. */
     public L padLeft (float padLeft) {
-        this.padLeft = new FixedValue(padLeft);
+        this.padLeft = new Value.FixedValue(padLeft);
         sizeInvalid = true;
         return (L)this;
     }
 
     /** Padding at the bottom edge of the table. */
     public L padBottom (float padBottom) {
-        this.padBottom = new FixedValue(padBottom);
+        this.padBottom = new Value.FixedValue(padBottom);
         sizeInvalid = true;
         return (L)this;
     }
 
     /** Padding at the right edge of the table. */
     public L padRight (float padRight) {
-        this.padRight = new FixedValue(padRight);
+        this.padRight = new Value.FixedValue(padRight);
         sizeInvalid = true;
         return (L)this;
     }

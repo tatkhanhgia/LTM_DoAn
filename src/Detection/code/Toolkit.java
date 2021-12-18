@@ -1,4 +1,4 @@
-package Detection.esotericsoftware.tablelayout;
+package Detection.code;
 
 /*******************************************************************************
  * Copyright (c) 2011, Nathan Sweet <nathan.sweet@gmail.com>
@@ -26,8 +26,7 @@ package Detection.esotericsoftware.tablelayout;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-
-import Detection.esotericsoftware.tablelayout.BaseTableLayout.Debug;
+//import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
 
 /** Base class for UI toolkit.
  * @author Nathan Sweet */
@@ -62,7 +61,7 @@ public abstract class Toolkit<C, T extends C, L extends BaseTableLayout> {
     abstract public void clearDebugRectangles (L layout);
 
     /** Adds a rectangle that should be drawn for debugging. */
-    abstract public void addDebugRectangle (L layout, Debug type, float x, float y, float w, float h);
+    abstract public void addDebugRectangle (L layout, BaseTableLayout.Debug type, float x, float y, float w, float h);
 
     /** @param widget May be null. */
     public void setWidget (L layout, Cell cell, C widget) {

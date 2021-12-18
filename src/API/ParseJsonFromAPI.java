@@ -43,8 +43,7 @@ public class ParseJsonFromAPI {
     public ArrayList<Model_Movie> arraymovie;
 //    return id and poster of movie to get info of movie (in page 1)
 //    need check if name of movie is null
-    public ArrayList<String> searchByName(String nameOfMovie) {
-        phim = new ArrayList<String>();
+    public boolean searchByName(String nameOfMovie) {        
         arraymovie = new ArrayList<>();
         HttpURLConnection connection = null;
         try {
@@ -80,6 +79,7 @@ public class ParseJsonFromAPI {
 //            resultAll.add(total_results);
 
             JSONArray results = object.getJSONArray("results");
+            if (results.length()<1) return false;
             for (int i = 0; i < results.length(); i++) {
                 JSONObject childOfResults = results.getJSONObject(i);
                 String id = childOfResults.getString("id");
@@ -94,16 +94,6 @@ public class ParseJsonFromAPI {
                 String backdrop_path = childOfResults.getString("backdrop_path");
                 String poster_path = childOfResults.getString("poster_path");
 
-                phim.add(id);
-                phim.add(title);
-                phim.add(overview);
-                phim.add(release_date);
-                phim.add(original_language);
-                phim.add(popularity);
-                phim.add(vote_average);
-                phim.add(vote_count);
-                phim.add(backdrop_path);
-                phim.add(poster_path);
                 Model_Movie temp = new Model_Movie(id,title,overview,release_date,original_language
                 						, popularity,vote_average,vote_count,backdrop_path,poster_path);
                 arraymovie.add(temp);
@@ -119,7 +109,7 @@ public class ParseJsonFromAPI {
         catch (IOException e) {
             System.err.println(e.getMessage());
         }
-        return phim;
+        return true;
     }
 
 //    some movies don't have poster image
@@ -827,6 +817,143 @@ public class ParseJsonFromAPI {
         return resultAll;
     }
 
+    public ArrayList<String> searchByPeople(String nameOfPeople) {
+        ArrayList<String> resultAll = new ArrayList<String>();
+        HttpURLConnection connection = null;
+        try {
+            String handleNameOfPeople = nameOfPeople.trim();
+            handleNameOfPeople = handleNameOfPeople.replaceAll("\\s+", "+");
+            handleNameOfPeople = handleNameOfPeople.replaceAll("[^a-zA-Z0-9+]", "");
+
+            URL url = new URL("https://api.themoviedb.org/3/search/person?api_key=" + myKey + "&query=" + handleNameOfPeople + "&language=en-US" +"&page=" + "1");
+
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setDoInput(true);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+            String line = null;
+            StringBuilder response = new StringBuilder();
+
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+                response.append("\r\n");
+            }
+
+            String result = response.toString();
+            JSONObject object = new JSONObject(result);
+
+            String page = object.getString("page");
+            String total_pages = object.getString("total_pages");
+            String total_results = object.getString("total_results");
+
+//            resultAll.add(page);
+//            resultAll.add(total_pages);
+//            resultAll.add(total_results);
+
+            JSONArray results = object.getJSONArray("results");
+            for (int i = 0; i < results.length(); i++) {
+                JSONObject childOfResults = results.getJSONObject(i);
+                String id = childOfResults.getString("id"); // id of actor
+                String name = childOfResults.getString("name");
+                String known_for_department = childOfResults.getString("known_for_department");
+                String gender = childOfResults.getString("gender");
+                String adult = childOfResults.getString("adult");
+                String popularity = childOfResults.getString("popularity");
+
+                String profile_path = childOfResults.getString("profile_path");
+
+//                resultAll.add(id);
+//                resultAll.add(name);
+//                resultAll.add(known_for_department);
+//                resultAll.add(gender);
+//                resultAll.add(adult);
+//                resultAll.add(popularity);
+//                resultAll.add(profile_path );
+
+//                List of movie which people join
+                JSONArray known_for = childOfResults.getJSONArray("known_for");
+                for (int j = 0; j < known_for.length(); j++) {
+                    JSONObject childOfKnownFor = known_for.getJSONObject(j);
+                    String idOfMovie = childOfKnownFor.getString("id"); //important, can use for class SearchByName of movie
+
+//                    Some of them can be null !!!
+//                    String media_type = childOfKnownFor.getString("media_type");
+//                    String adultOfMovie = childOfKnownFor.getString("adult");
+//                    String original_language = childOfKnownFor.getString("original_language");
+//                    String title = childOfKnownFor.getString("title");
+//                    String original_title = childOfKnownFor.getString("original_title");
+//                    String overview = childOfKnownFor.getString("overview");
+//                    String release_date = childOfKnownFor.getString("release_date");
+//                    String vote_average = childOfKnownFor.getString("vote_average");
+//                    String vote_count = childOfKnownFor.getString("vote_count");
+//                    String video = childOfKnownFor.getString("video");
+
+//                    String backdrop_path = childOfResults.getString("backdrop_path");
+//                    String poster_path = childOfResults.getString("poster_path");
+
+                    resultAll.add(idOfMovie);
+//                    resultAll.add(media_type);
+//                    resultAll.add(adultOfMovie);
+//                    resultAll.add(original_language);
+//                    resultAll.add(title);
+//                    resultAll.add(original_title);
+//                    resultAll.add(overview);
+//                    resultAll.add(release_date);
+//                    resultAll.add(vote_average);
+//                    resultAll.add(vote_count);
+//                    resultAll.add(video);
+//                    resultAll.add(backdrop_path);
+//                    resultAll.add(poster_path);
+
+                    JSONArray genre_ids = childOfKnownFor.getJSONArray("genre_ids");
+                    for (int k = 0; k < genre_ids.length(); k++) {
+                        resultAll.add(genre_ids.get(k).toString());
+                    }
+                }
+            }
+            reader.close();
+        }
+        catch (MalformedURLException e) {
+            System.err.println(e.getMessage());
+        }
+        catch (JSONException e) {
+            System.err.println(e.getMessage());
+        }
+        catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+        return resultAll;
+    }
+
+    public ArrayList<Image> getProfileImage(String nameOfPeople) {
+        ArrayList<Image> resultAll = new ArrayList<Image>();
+        HttpURLConnection connection = null;
+        try {
+            ArrayList<String> profilePath = new ArrayList<String>();
+            profilePath = searchByPeople(nameOfPeople);
+            for (int i = 1; i < profilePath.size(); i += 2) {
+//                can switch "w500" and "original" size
+                if (!profilePath.get(i).equals("null")) {
+                    URL url = new URL("https://image.tmdb.org/t/p/w500/" + profilePath.get(i));
+                    Image profileImage = ImageIO.read(url);
+                    resultAll.add(profileImage);
+                }
+                else {
+                    continue;
+                }
+            }
+        }
+        catch (MalformedURLException e) {
+            System.err.println(e.getMessage());
+        }
+        catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+        return resultAll;
+    }
+    
     public void ParseJsonFromAPI1() {
         String input = "tenet";
 

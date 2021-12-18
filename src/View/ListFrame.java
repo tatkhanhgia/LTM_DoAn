@@ -38,7 +38,7 @@ public class ListFrame extends JFrame {
 	DefaultTableModel model;
 	JScrollPane jScrollPane1;
 	Vector header;
-	public static Controller_Client_SearchPhim controller;
+
 	
 	public static void main(String[] args) {
 		try
@@ -61,8 +61,6 @@ public class ListFrame extends JFrame {
 				try {
 					ListFrame frame = new ListFrame();
 					frame.setVisible(true);		
-					controller = new Controller_Client_SearchPhim();
-					controller.Open_Client("localhost", 6000);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -141,7 +139,7 @@ public class ListFrame extends JFrame {
 	
 	//Sử dụng để quay lại listframe đã tồn tại phim tìm trước đó
 	public void ListFrameExist() {
-		ArrayList<Model_Movie> array = controller.listmovie;
+		ArrayList<Model_Movie> array = MainView.controller.listmovie;
 		//UPLOAD lên table
 		if (model.getRowCount() == 0) {                         //KHÔNG CHO NGDUNG CHỈNH SỬA TRÊN TABLE
             model = new DefaultTableModel(header, 0)
@@ -180,16 +178,22 @@ public class ListFrame extends JFrame {
 				
 				//Lấy tên phim
 				String temp = txtTimKiem.getText();				
-				controller.send_text(temp);
+				MainView.controller.send_text(temp);
 				System.out.println("Gửi "+temp+" sang server");
 				try {
-					String result = controller.Receiver();
+					String result = MainView.controller.Receiver();
 					if(result.equals("fail_input"))
 					{
-						JOptionPane.showMessageDialog(null, "Lỗi","Lỗi nhập liệu",JOptionPane.CANCEL_OPTION);
+						JOptionPane.showMessageDialog(null, "Lỗi nhập! Vui lòng không nhập chữ cái + kí tự lạ!","Lỗi nhập liệu",JOptionPane.CANCEL_OPTION);
 						return;
 					}
-					ArrayList<Model_Movie> array = controller.listmovie;
+					if(result.equals("fail_search"))
+					{
+						JOptionPane.showMessageDialog(null, "Không tìm thấy tên phim","Lỗi",JOptionPane.CANCEL_OPTION);
+						return;
+					}
+
+					ArrayList<Model_Movie> array = MainView.controller.listmovie;
 					//UPLOAD lên table
 					if (model.getRowCount() == 0) {                         //KHÔNG CHO NGDUNG CHỈNH SỬA TRÊN TABLE
                         model = new DefaultTableModel(header, 0)
@@ -228,9 +232,10 @@ public class ListFrame extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				k.dispose();
+				MainView.controller.send_text("bye");//Out khỏi server search phim
 				MainView a = new MainView();
 				a.setVisible(true);
+				k.dispose();
 			}
 		});
 	}
@@ -281,8 +286,9 @@ public class ListFrame extends JFrame {
 			
 			@Override
 			public void windowClosing(WindowEvent e) {
-				ListFrame.controller.send_text("bye");
-				ListFrame.controller.Close_Client();
+				MainView.controller.send_text("bye");
+				MainView.controller.send_text("bye");
+				MainView.controller.Close_Client();
 				
 			}
 			

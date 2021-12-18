@@ -107,8 +107,9 @@ public class GUI_Client_Search extends JFrame {
 			
 			@Override
 			public void windowClosing(WindowEvent e) {
-				ListFrame.controller.send_text("bye");
-				ListFrame.controller.Close_Client();
+				MainView.controller.send_text("bye");
+				MainView.controller.send_text("bye");
+				MainView.controller.Close_Client();
 				
 			}
 			
@@ -388,7 +389,7 @@ public class GUI_Client_Search extends JFrame {
 	}
 
 	public void Load_from_int_i(int i) {
-		Model_Movie a =  ListFrame.controller.listmovie.get(i);
+		Model_Movie a =  MainView.controller.listmovie.get(i);
 		txtMoTa.append(a.getOverview());
 		txtDaoDien.append(a.getCrew_ToString());
 		txtTenPhim.setText(a.getTitle());;
@@ -428,7 +429,7 @@ public class GUI_Client_Search extends JFrame {
 		runtrailer.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {    	
-				String temp = ListFrame.controller.listmovie.get(i).getKeyTrailer();
+				String temp = MainView.controller.listmovie.get(i).getKeyTrailer();
 				if(temp.equals("null"))
 				{
 					JOptionPane.showMessageDialog(null, "Lỗi","Không có trailer cho phim này",JOptionPane.CANCEL_OPTION);
@@ -469,8 +470,9 @@ public class GUI_Client_Search extends JFrame {
 			
 			@Override
 			public void windowClosing(WindowEvent e) {
-				ListFrame.controller.send_text("bye");
-				ListFrame.controller.Close_Client();
+				MainView.controller.send_text("bye");
+				MainView.controller.send_text("bye");
+				MainView.controller.Close_Client();
 				
 			}
 			

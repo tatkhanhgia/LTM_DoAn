@@ -550,7 +550,7 @@ cash machine
 slide rule
 desktop computer
 hand-held computer
-notebook
+notebook laptop
 web site
 harvester
 thresher

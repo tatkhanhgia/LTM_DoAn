@@ -1,4 +1,4 @@
-package Detection.esotericsoftware.tablelayout;
+package Detection.code;
 
 /*******************************************************************************
  * Copyright (c) 2011, Nathan Sweet <nathan.sweet@gmail.com>
@@ -26,10 +26,11 @@ package Detection.esotericsoftware.tablelayout;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
+//import com.esotericsoftware.tablelayout.Value.FixedValue;
 
-import Detection.esotericsoftware.tablelayout.Value.FixedValue;
+//import static com.esotericsoftware.tablelayout.BaseTableLayout.*;
 
-import static Detection.esotericsoftware.tablelayout.BaseTableLayout.*;
+import static Detection.code.BaseTableLayout.*;
 
 /** A cell in a table.
  * @author Nathan Sweet */
@@ -156,13 +157,13 @@ public class Cell<C> {
 
     /** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified value. */
     public Cell size (float size) {
-        size(new FixedValue(size));
+        size(new Value.FixedValue(size));
         return this;
     }
 
     /** Sets the minWidth, prefWidth, maxWidth, minHeight, prefHeight, and maxHeight to the specified values. */
     public Cell size (float width, float height) {
-        size(new FixedValue(width), new FixedValue(height));
+        size(new Value.FixedValue(width), new Value.FixedValue(height));
         return this;
     }
 
@@ -176,7 +177,7 @@ public class Cell<C> {
 
     /** Sets the minWidth, prefWidth, and maxWidth to the specified value. */
     public Cell width (float width) {
-        width(new FixedValue(width));
+        width(new Value.FixedValue(width));
         return this;
     }
 
@@ -190,7 +191,7 @@ public class Cell<C> {
 
     /** Sets the minHeight, prefHeight, and maxHeight to the specified value. */
     public Cell height (float height) {
-        height(new FixedValue(height));
+        height(new Value.FixedValue(height));
         return this;
     }
 
@@ -220,25 +221,25 @@ public class Cell<C> {
 
     /** Sets the minWidth and minHeight to the specified value. */
     public Cell minSize (float size) {
-        minWidth = new FixedValue(size);
-        minHeight = new FixedValue(size);
+        minWidth = new Value.FixedValue(size);
+        minHeight = new Value.FixedValue(size);
         return this;
     }
 
     /** Sets the minWidth and minHeight to the specified values. */
     public Cell minSize (float width, float height) {
-        minWidth = new FixedValue(width);
-        minHeight = new FixedValue(height);
+        minWidth = new Value.FixedValue(width);
+        minHeight = new Value.FixedValue(height);
         return this;
     }
 
     public Cell minWidth (float minWidth) {
-        this.minWidth = new FixedValue(minWidth);
+        this.minWidth = new Value.FixedValue(minWidth);
         return this;
     }
 
     public Cell minHeight (float minHeight) {
-        this.minHeight = new FixedValue(minHeight);
+        this.minHeight = new Value.FixedValue(minHeight);
         return this;
     }
 
@@ -268,25 +269,25 @@ public class Cell<C> {
 
     /** Sets the prefWidth and prefHeight to the specified value. */
     public Cell prefSize (float width, float height) {
-        prefWidth = new FixedValue(width);
-        prefHeight = new FixedValue(height);
+        prefWidth = new Value.FixedValue(width);
+        prefHeight = new Value.FixedValue(height);
         return this;
     }
 
     /** Sets the prefWidth and prefHeight to the specified values. */
     public Cell prefSize (float size) {
-        prefWidth = new FixedValue(size);
-        prefHeight = new FixedValue(size);
+        prefWidth = new Value.FixedValue(size);
+        prefHeight = new Value.FixedValue(size);
         return this;
     }
 
     public Cell prefWidth (float prefWidth) {
-        this.prefWidth = new FixedValue(prefWidth);
+        this.prefWidth = new Value.FixedValue(prefWidth);
         return this;
     }
 
     public Cell prefHeight (float prefHeight) {
-        this.prefHeight = new FixedValue(prefHeight);
+        this.prefHeight = new Value.FixedValue(prefHeight);
         return this;
     }
 
@@ -316,25 +317,25 @@ public class Cell<C> {
 
     /** Sets the maxWidth and maxHeight to the specified value. */
     public Cell maxSize (float size) {
-        maxWidth = new FixedValue(size);
-        maxHeight = new FixedValue(size);
+        maxWidth = new Value.FixedValue(size);
+        maxHeight = new Value.FixedValue(size);
         return this;
     }
 
     /** Sets the maxWidth and maxHeight to the specified values. */
     public Cell maxSize (float width, float height) {
-        maxWidth = new FixedValue(width);
-        maxHeight = new FixedValue(height);
+        maxWidth = new Value.FixedValue(width);
+        maxHeight = new Value.FixedValue(height);
         return this;
     }
 
     public Cell maxWidth (float maxWidth) {
-        this.maxWidth = new FixedValue(maxWidth);
+        this.maxWidth = new Value.FixedValue(maxWidth);
         return this;
     }
 
     public Cell maxHeight (float maxHeight) {
-        this.maxHeight = new FixedValue(maxHeight);
+        this.maxHeight = new Value.FixedValue(maxHeight);
         return this;
     }
 
@@ -378,7 +379,7 @@ public class Cell<C> {
     /** Sets the spaceTop, spaceLeft, spaceBottom, and spaceRight to the specified value. */
     public Cell space (float space) {
         if (space < 0) throw new IllegalArgumentException("space cannot be < 0.");
-        Value value = new FixedValue(space);
+        Value value = new Value.FixedValue(space);
         spaceTop = value;
         spaceLeft = value;
         spaceBottom = value;
@@ -391,34 +392,34 @@ public class Cell<C> {
         if (left < 0) throw new IllegalArgumentException("left cannot be < 0.");
         if (bottom < 0) throw new IllegalArgumentException("bottom cannot be < 0.");
         if (right < 0) throw new IllegalArgumentException("right cannot be < 0.");
-        spaceTop = new FixedValue(top);
-        spaceLeft = new FixedValue(left);
-        spaceBottom = new FixedValue(bottom);
-        spaceRight = new FixedValue(right);
+        spaceTop = new Value.FixedValue(top);
+        spaceLeft = new Value.FixedValue(left);
+        spaceBottom = new Value.FixedValue(bottom);
+        spaceRight = new Value.FixedValue(right);
         return this;
     }
 
     public Cell spaceTop (float spaceTop) {
         if (spaceTop < 0) throw new IllegalArgumentException("spaceTop cannot be < 0.");
-        this.spaceTop = new FixedValue(spaceTop);
+        this.spaceTop = new Value.FixedValue(spaceTop);
         return this;
     }
 
     public Cell spaceLeft (float spaceLeft) {
         if (spaceLeft < 0) throw new IllegalArgumentException("spaceLeft cannot be < 0.");
-        this.spaceLeft = new FixedValue(spaceLeft);
+        this.spaceLeft = new Value.FixedValue(spaceLeft);
         return this;
     }
 
     public Cell spaceBottom (float spaceBottom) {
         if (spaceBottom < 0) throw new IllegalArgumentException("spaceBottom cannot be < 0.");
-        this.spaceBottom = new FixedValue(spaceBottom);
+        this.spaceBottom = new Value.FixedValue(spaceBottom);
         return this;
     }
 
     public Cell spaceRight (float spaceRight) {
         if (spaceRight < 0) throw new IllegalArgumentException("spaceRight cannot be < 0.");
-        this.spaceRight = new FixedValue(spaceRight);
+        this.spaceRight = new Value.FixedValue(spaceRight);
         return this;
     }
 
@@ -461,7 +462,7 @@ public class Cell<C> {
 
     /** Sets the padTop, padLeft, padBottom, and padRight to the specified value. */
     public Cell pad (float pad) {
-        Value value = new FixedValue(pad);
+        Value value = new Value.FixedValue(pad);
         padTop = value;
         padLeft = value;
         padBottom = value;
@@ -470,30 +471,30 @@ public class Cell<C> {
     }
 
     public Cell pad (float top, float left, float bottom, float right) {
-        padTop = new FixedValue(top);
-        padLeft = new FixedValue(left);
-        padBottom = new FixedValue(bottom);
-        padRight = new FixedValue(right);
+        padTop = new Value.FixedValue(top);
+        padLeft = new Value.FixedValue(left);
+        padBottom = new Value.FixedValue(bottom);
+        padRight = new Value.FixedValue(right);
         return this;
     }
 
     public Cell padTop (float padTop) {
-        this.padTop = new FixedValue(padTop);
+        this.padTop = new Value.FixedValue(padTop);
         return this;
     }
 
     public Cell padLeft (float padLeft) {
-        this.padLeft = new FixedValue(padLeft);
+        this.padLeft = new Value.FixedValue(padLeft);
         return this;
     }
 
     public Cell padBottom (float padBottom) {
-        this.padBottom = new FixedValue(padBottom);
+        this.padBottom = new Value.FixedValue(padBottom);
         return this;
     }
 
     public Cell padRight (float padRight) {
-        this.padRight = new FixedValue(padRight);
+        this.padRight = new Value.FixedValue(padRight);
         return this;
     }
 

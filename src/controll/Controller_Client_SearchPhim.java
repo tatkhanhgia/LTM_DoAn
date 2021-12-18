@@ -12,6 +12,7 @@ import java.util.Random;
 import API.ParseJsonFromAPI;
 import controll.En_Decrypt_AES;
 import controll.En_Decrypt_RSA;
+import Model.Model_Image;
 import Model.Model_Movie;
 import Model.Model_RSA;
 
@@ -23,7 +24,7 @@ public class Controller_Client_SearchPhim {
 	private En_Decrypt_AES aes;
 	public ArrayList<Model_Movie> listmovie;
 	
-	//Function Open_Client
+	//Function Open_Client forsearch
 	public void Open_Client(String host, int port)
 	{
 		try {
@@ -54,6 +55,29 @@ public class Controller_Client_SearchPhim {
 		} 
 	}
 	
+	public Model_Image Receive_Image()
+	{
+		String receive = "";
+		Model_Image temp = new Model_Image();
+		while(true) {
+			try {				
+				receive = in.readLine();
+				if(receive.equals("end"))
+					return temp;
+				if(receive.equals("fail_input"))
+					return null;
+				//Đọc và gắn vào Model Image
+				String image = receive;				
+				temp.convert_to_image(image);
+				receive = in.readLine(); //đọc định dạng extension
+				temp.extension = receive;
+				System.out.println("extension:"+temp.extension);
+			} catch (IOException e) {
+				return null;
+			}
+		}		
+	}
+	
 	//Function Close Client
 	public void Close_Client()
 	{
@@ -75,6 +99,8 @@ public class Controller_Client_SearchPhim {
 					return "end";
 				if (receive.equals("fail_input"))
 					return "fail_input";
+				if (receive.equals("result_fail"))
+					return "fail_search";
 				Model_Movie movie = new Model_Movie();
 				movie.setId(receive);	//Gắn id
 				receive = in.readLine();
@@ -217,7 +243,8 @@ public class Controller_Client_SearchPhim {
 	
 	public void send_text(String send)
 	{
-		try {
+		try {			
+			System.out.println("Trước mã hsoa:"+send);
 			String encrypt = aes.encrypt_String(send, key);
 			out.write(encrypt);
 			out.newLine();
@@ -227,19 +254,32 @@ public class Controller_Client_SearchPhim {
 
 	}
 	
+	
 	public void play(String id) {
 		ParseJsonFromAPI a = new ParseJsonFromAPI();
 		a.playTrailerFromBrowser2(id);
 	}
 	
-	public static void main(String[] args) throws IOException {
-//		Controller_Client_SearchPhim a = new Controller_Client_SearchPhim();
-//		a.Open_Client("localhost", 1234);
+	public static void main(String[] args) throws IOException, InterruptedException {
+		Controller_Client_SearchPhim a = new Controller_Client_SearchPhim();
+		a.Open_Client("localhost", 6000);
+		a.send_text("anh");
 //		a.send_text("blackpink");
 //		String temp = a.Receiver();
 //		System.out.println("\n\n"+temp);
 //		System.out.println("\n\nSố lượng listmovie"+a.listmovie.size());
+		String test = "C:\\Users\\gia\\Desktop\\BG\\1.jpg";
+		Model_Image temp = new Model_Image();
+		temp.path = test;
+		a.send_text(temp.encodeImage());		
+		a.send_text("resize");
+		a.send_text("large");
+		a.send_text("jpg");
 		
+		a.Receive_Image();
+		a.send_text("bye");
+		a.send_text("bye");
+		a.Close_Client();
 	}
 
 }

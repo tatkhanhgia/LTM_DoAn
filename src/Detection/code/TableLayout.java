@@ -1,4 +1,4 @@
-package Detection.esotericsoftware.tablelayout.swing;
+package Detection.code;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -7,12 +7,12 @@ import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
 
-import Detection.esotericsoftware.tablelayout.BaseTableLayout;
-import Detection.esotericsoftware.tablelayout.Cell;
-import Detection.esotericsoftware.tablelayout.swing.SwingToolkit.DebugRect;
+//import com.esotericsoftware.tablelayout.BaseTableLayout;
+//import com.esotericsoftware.tablelayout.Cell;
+//import com.esotericsoftware.tablelayout.swing.SwingToolkit.DebugRect;
 
 class TableLayout extends BaseTableLayout<Component, Table, TableLayout, SwingToolkit> {
-    ArrayList<DebugRect> debugRects;
+    ArrayList<SwingToolkit.DebugRect> debugRects;
 
     public TableLayout () {
         super((SwingToolkit)SwingToolkit.instance);
@@ -54,7 +54,7 @@ class TableLayout extends BaseTableLayout<Component, Table, TableLayout, SwingTo
         Graphics2D g = (Graphics2D)getTable().getGraphics();
         if (g == null) return;
         g.setColor(Color.red);
-        for (DebugRect rect : debugRects) {
+        for (SwingToolkit.DebugRect rect : debugRects) {
             if (rect.type == Debug.cell) g.setColor(Color.red);
             if (rect.type == Debug.widget) g.setColor(Color.green);
             if (rect.type == Debug.table) g.setColor(Color.blue);
@@ -62,4 +62,3 @@ class TableLayout extends BaseTableLayout<Component, Table, TableLayout, SwingTo
         }
     }
 }
-

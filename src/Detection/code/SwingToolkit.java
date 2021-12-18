@@ -1,8 +1,8 @@
-package Detection.esotericsoftware.tablelayout.swing;
+package Detection.code;
 
-import Detection.esotericsoftware.tablelayout.BaseTableLayout.Debug;
-import Detection.esotericsoftware.tablelayout.Cell;
-import Detection.esotericsoftware.tablelayout.Toolkit;
+//import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
+//import com.esotericsoftware.tablelayout.Cell;
+//import com.esotericsoftware.tablelayout.Toolkit;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -74,7 +74,7 @@ class SwingToolkit extends Toolkit<Component, Table, TableLayout> {
         layout.debugRects = null;
     }
 
-    public void addDebugRectangle (TableLayout layout, Debug type, float x, float y, float w, float h) {
+    public void addDebugRectangle (TableLayout layout, BaseTableLayout.Debug type, float x, float y, float w, float h) {
         if (layout.debugRects == null) {
             layout.debugRects = new ArrayList();
             debugLayouts.add(layout);
@@ -103,10 +103,10 @@ class SwingToolkit extends Toolkit<Component, Table, TableLayout> {
     }
 
     static class DebugRect {
-        final Debug type;
+        final BaseTableLayout.Debug type;
         final int x, y, width, height;
 
-        public DebugRect (Debug type, float x, float y, float width, float height) {
+        public DebugRect (BaseTableLayout.Debug type, float x, float y, float width, float height) {
             this.x = (int)x;
             this.y = (int)y;
             this.width = (int)(width - 1);

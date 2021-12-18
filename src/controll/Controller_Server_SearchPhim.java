@@ -1,9 +1,11 @@
 package controll;
 
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
@@ -16,8 +18,16 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+
+import javax.imageio.ImageIO;
+
 import API.*;
+import Model.Model_Image;
 import Model.Model_RSA;
+import ij.ImagePlus;
+import ij.io.FileSaver;
+import ij.process.ImageConverter;
+import ij.process.ImageProcessor;
 
 public class Controller_Server_SearchPhim {
 	private BufferedReader 	in;				//read from pipe socket
@@ -48,13 +58,32 @@ public class Controller_Server_SearchPhim {
 			out = new BufferedWriter(new OutputStreamWriter(socket_server.getOutputStream()));
 			in = new BufferedReader(new InputStreamReader(socket_server.getInputStream()));
 			
-			String data ="";			
+			String typeserver ="";			
 			
 			//SSLHandShake
 			this.Start_SSL_Handshake();
 			
 			//Communication
-			this.Communication();
+			while(true) {
+				typeserver = in.readLine();
+				//Giaỉ mã
+				String decrypt = sessionkey.decrypt_String(typeserver, sessionkey.mykey);	
+				System.out.println("Giaỉ mã loại server:"+decrypt);
+				if(decrypt.equals("phim"))
+				{
+					System.out.println("Server phục vụ:SearchPhim");
+					this.Communication_phim();
+					continue;
+				}
+				if(decrypt.equals("anh"))
+				{
+					System.out.println("Server phục vụ:Xử Lý Ảnh");
+					this.Communication_anh();
+					continue;
+				}
+				if(decrypt.equals("bye"))
+					break;
+			}
 			//Close
 			Thread.sleep(1000);
 			System.out.println("Close Connection");
@@ -137,6 +166,7 @@ public class Controller_Server_SearchPhim {
 		return (gate1==true&&gate2==true)?true:false;		
 	}
 	
+	//Gửi Key RSA
 	public boolean Send_key_RSA()  {
 		try {
 			keyrsa = new Model_RSA();
@@ -154,6 +184,7 @@ public class Controller_Server_SearchPhim {
 		}
 	}
 	
+	//Nhận Key Session_AES
 	public boolean Get_SessionKey() {
 		try {
 			String sessionkey = in.readLine();
@@ -177,6 +208,7 @@ public class Controller_Server_SearchPhim {
 		
 	}
 	
+	//Bắt đầu SSL handshake để thiết lập kết nối an toàn
 	public void Start_SSL_Handshake() {
 		//Start SSL handshake with Client
 		//Create RSA key and write to file
@@ -198,13 +230,19 @@ public class Controller_Server_SearchPhim {
 			}
 	}
 	
-	public void Communication() {
+	//Kết nối với server search phim
+	public void Communication_phim() {
 		while(true) {
 			try {
-				String receive = in.readLine();		
-				String decrypt = sessionkey.decrypt_String(receive, sessionkey.mykey);
+				//Nhận từ client_Receive from client
+				String receive = in.readLine();
+				
+				//Giaỉ mã
+				String decrypt = sessionkey.decrypt_String(receive, sessionkey.mykey);							
+				
+				//Kiểm tra đầu vào_check input
 				decrypt = this.trim_extend(decrypt);
-				if(check_input(decrypt)==false)
+				if(check_input(decrypt)==false)			
 				{
 					this.write_to_client("fail_input");
 					continue;
@@ -213,8 +251,10 @@ public class Controller_Server_SearchPhim {
 				{
 					break;
 				}
+				
+				//In ra thông báo nhận từ client_Print notification
 				System.out.println("Nhận từ client:"+decrypt);
-				this.Get_API_Search_phim(decrypt);
+				this.Get_API_Search_phim(decrypt);												
 			} catch (IOException e) {
 				System.out.println("Client_terminate");
 				break;
@@ -223,10 +263,51 @@ public class Controller_Server_SearchPhim {
 		}
 	}
 
+	//Kết nối với server ảnh
+	public void Communication_anh() {
+		while(true) {
+			try {
+				//Nhận từ client_Receive from client
+				String receive = in.readLine();
+				
+				//Giaỉ mã
+				String decrypt = sessionkey.decrypt_String(receive, sessionkey.mykey);
+				System.out.println("Server đã nhận dữ liệu");				
+				
+				//Kiểm tra đầu vào_check input
+				decrypt = this.trim_extend(decrypt);				
+				if(decrypt.equals("bye"))
+				{
+					break;
+				}
+				//Đọc dữ liệu theo thứ tự : ảnh - chức năng - saveas(dành cho format) - đuôi ảnh
+				String data = decrypt;
+				receive = in.readLine();				
+				decrypt = sessionkey.decrypt_String(receive, sessionkey.mykey);
+				String chucnang = decrypt;
+				receive = in.readLine();				
+				decrypt = sessionkey.decrypt_String(receive, sessionkey.mykey);
+				String saveas = decrypt;
+				receive = in.readLine();				
+				decrypt = sessionkey.decrypt_String(receive, sessionkey.mykey);
+				String extension = decrypt;
+				this.Get_API_Image(data, chucnang, saveas, extension);												
+			} catch (IOException e) {				
+				break;
+			}
+			
+		}
+	}
 	
+	//Hàm gọi API và gửi dữ liệu cho client
+	//Function Call API and send data back to client
 	public void Get_API_Search_phim(String phim) {
 		ParseJsonFromAPI API = new ParseJsonFromAPI();
-		API.searchByName(phim);
+		boolean a = API.searchByName(phim);
+		if ( !a) {
+			this.write_to_client("result_fail");
+			return;
+		}
 		API.getPosterImage(phim);
 		API.getReviewOfMovie(phim);
 		API.getActorOfMovie(phim);
@@ -361,6 +442,158 @@ public class Controller_Server_SearchPhim {
 		this.write_to_client("end");				
 	}
 
+	//Hàm gọi API, chỉnh sửa ảnh
+	//Function Call API and edit image send back to client
+	public void Get_API_Image(String imagestring,String chucnang,String saveas,String extension)
+	{
+		try {
+			System.out.println("Vào hàm api");
+			String pathsave = "";
+			//Tạo model để convert từ String sang Image
+			Model_Image image = new Model_Image();
+			image.convert_to_image(imagestring);
+			//Tạo ảnh			
+			BufferedImage buffer = image.buffered;
+		    File outputfile = new File(".\\Image\\temp."+extension);
+		    ImageIO.write(buffer, extension, outputfile); 
+		    Image images  = ImageIO.read(new File(".\\Image\\temp."+extension));			    
+		    //Tạo đối tượng ImagePlus để thực hiện các chức năng
+			ImagePlus lib = new ImagePlus("anh", images);
+			switch(chucnang) {
+				case "format":{
+					FileSaver file = new FileSaver(lib);
+					if(saveas.equals("tif"))
+					{
+						file.saveAsTiff(".\\Image\\format.tif");
+						pathsave = ".\\Image\\format.tif";
+						extension = "tif";
+					}					
+					if(saveas.equals("jpg"))
+					{
+						file.saveAsJpeg(".\\Image\\format.jpg");
+						pathsave = ".\\Image\\format.jpg";
+						extension = "jpg";
+					}
+					if(saveas.equals("gif"))
+					{
+						file.saveAsGif(".\\Image\\format.gif");
+						pathsave = ".\\Image\\format.gif";
+						extension = "gif";
+					}
+					if(saveas.equals("png"))
+					{
+						file.saveAsPng(".\\Image\\format.png");
+						pathsave = ".\\Image\\format.png";
+						extension = "png";
+					}
+			        break;
+				}
+				case "compress":{
+					FileSaver file = new FileSaver(lib);
+			        file.setJpegQuality(0);
+			        if(extension.equals("png"))
+			        {
+			        	file.saveAsPng(".\\Image\\compress.png");
+			        	pathsave = ".\\Image\\compress.png";
+			        }
+			        if(extension.equals("jpg"))
+			        {
+			        	file.saveAsJpeg(".\\Image\\compress.jpg");
+			        	pathsave = ".\\Image\\compress.jpg";
+			        }
+			        if(extension.equals("tif"))
+			        {
+			        	file.saveAsTiff(".\\Image\\compress.tif");
+			        	pathsave = ".\\Image\\compress.tif";
+			        }
+			        if(extension.equals("gif"))
+			        {
+			        	file.saveAsGif(".\\Image\\compress.gif");
+			        	pathsave = ".\\Image\\compress.gif";
+			        }			        
+					break;
+				}
+				case "gray":{
+					new ImageConverter(lib).convertToGray8();
+					FileSaver file = new FileSaver(lib);
+					if(extension.equals("png"))
+			        {
+			        	file.saveAsPng(".\\Image\\gray.png");
+			        	pathsave = ".\\Image\\gray.png";
+			        }
+			        if(extension.equals("jpg"))
+			        {
+			        	file.saveAsJpeg(".\\Image\\gray.jpg");
+			        	pathsave = ".\\Image\\gray.jpg";
+			        }
+			        if(extension.equals("tif"))
+			        {
+			        	file.saveAsTiff(".\\Image\\gray.tif");
+			        	pathsave = ".\\Image\\gray.tif";
+			        }
+			        if(extension.equals("gif"))
+			        {
+			        	file.saveAsGif(".\\Image\\gray.gif");
+			        	pathsave = ".\\Image\\gray.gif";
+			        }			     
+					break;
+				}
+				case "resize":{
+					ImageProcessor resize = null;
+					if(saveas.equals("small"))				
+					{	resize = lib.getProcessor().resize(lib.getWidth()-500, lib.getHeight()-500, false);}					
+					if(saveas.equals("medium"))
+					{	resize = lib.getProcessor().resize(lib.getWidth()-100, lib.getHeight()-100, false);}
+					if(saveas.equals("large"))
+					{	resize = lib.getProcessor().resize(lib.getWidth()+300, lib.getHeight()+300, false);}					
+					lib.setProcessor(resize);
+					FileSaver file = new FileSaver(lib);
+					if(extension.equals("png"))
+			        {
+			        	file.saveAsPng(".\\Image\\resize.png");
+			        	pathsave = ".\\Image\\resize.png";
+			        }
+			        if(extension.equals("jpg"))
+			        {
+			        	file.saveAsJpeg(".\\Image\\resize.jpg");
+			        	pathsave = ".\\Image\\resize.jpg";
+			        }
+			        if(extension.equals("tif"))
+			        {
+			        	file.saveAsTiff(".\\Image\\resize.tif");
+			        	pathsave = ".\\Image\\resize.tif";
+			        }
+			        if(extension.equals("gif"))
+			        {
+			        	file.saveAsGif(".\\Image\\resize.gif");
+			        	pathsave = ".\\Image\\resize.gif";
+			        }		
+					break;
+				}
+				case "detec":
+				case "api":
+			}
+			//xóa ảnh temp vừa tạo ra để hỗ trợ khởi tạo ImagePlus
+			//outputfile.deleteOnExit();
+			//Thực hiện đọc các ảnh vừa save để đưa về client			
+			image.path = pathsave;
+			System.out.println("Pathsave:"+pathsave);
+			//File delete = new File(pathsave);
+			//delete.deleteOnExit();
+			String send = image.encodeImage();
+			this.write_to_client(send);
+			this.write_to_client(extension);
+			this.write_to_client("end");//Ký hiệu hết giữa client-server
+		} catch (IOException e) {
+			this.write_to_client("fail_input");
+		}
+	}
+	
+	//Hàm nhận diện ảnh
+	public void Detection() {
+		
+	}
+	
 	public static void main(String[] args) {
 		Controller_Server_SearchPhim a = new Controller_Server_SearchPhim();
 		a.Open_Server(6000);		

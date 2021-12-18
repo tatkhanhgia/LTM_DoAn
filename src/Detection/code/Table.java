@@ -1,10 +1,10 @@
-package Detection.esotericsoftware.tablelayout.swing;
+package Detection.code;
 
-import Detection.esotericsoftware.tablelayout.BaseTableLayout;
-import Detection.esotericsoftware.tablelayout.BaseTableLayout.Debug;
-import Detection.esotericsoftware.tablelayout.Cell;
-import Detection.esotericsoftware.tablelayout.Toolkit;
-import Detection.esotericsoftware.tablelayout.Value;
+//import com.esotericsoftware.tablelayout.BaseTableLayout;
+//import com.esotericsoftware.tablelayout.BaseTableLayout.Debug;
+//import com.esotericsoftware.tablelayout.Cell;
+//import com.esotericsoftware.tablelayout.Toolkit;
+//import com.esotericsoftware.tablelayout.Value;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -271,12 +271,12 @@ public class Table extends JComponent {
 
     /** Turns on debug lines.
      * @see TableLayout#debug() */
-    public Table debug (Debug debug) {
+    public Table debug (BaseTableLayout.Debug debug) {
         layout.debug(debug);
         return this;
     }
 
-    public Debug getDebug () {
+    public BaseTableLayout.Debug getDebug () {
         return layout.getDebug();
     }
 
