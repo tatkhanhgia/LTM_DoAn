@@ -120,8 +120,8 @@ public class Controller_Client_SearchPhim {
 	}
 	
 	//Hàm để get về phim khi chạy chức năng search phim
-	public String Receiver() throws IOException {		
-		listmovie = new ArrayList();
+	public String Receiver() throws IOException {	
+		listmovie = new ArrayList<Model_Movie>();
 		String receive = "";	
 		while(true) {														
 				receive = this.decrypt_string(in.readLine());

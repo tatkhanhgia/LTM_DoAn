@@ -405,10 +405,12 @@ public class GUI_Client_Search extends JFrame {
 		for(int q=0;q<a.getTheLoai().size();q++)
 		{	
 			txttheloai.append(a.getTheLoai().get(q));
+			txttheloai.append("\n");
 		}
 		for(int q=0;q<a.getCompany().size();q++)
 		{	
 			txtCompany.append(a.getCompany().get(q));
+			txtReview.append("\n");
 		}
 		txtNgansach.setText(a.getNgansach());
 		txtDoanhthu.setText(a.getDoanhthu());
