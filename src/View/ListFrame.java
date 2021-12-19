@@ -12,6 +12,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import de.javasoft.synthetica.dark.SyntheticaDarkLookAndFeel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,6 +40,8 @@ public class ListFrame extends JFrame {
 	DefaultTableModel model;
 	JScrollPane jScrollPane1;
 	Vector header;
+	JCheckBox boxphim;
+	JCheckBox boxdienvien;
 
 	public static void main(String[] args) {
 		try
@@ -98,6 +102,10 @@ public class ListFrame extends JFrame {
 		txtTimKiem.setBounds(10, 10, 523, 33);
 		panel.add(txtTimKiem);
 		txtTimKiem.setColumns(10);
+		
+		boxdienvien = new JCheckBox("Diễn Viên");
+		boxdienvien.setBounds(700, 100, 105, 33);
+		panel.add(boxdienvien);
 		
 		table = new JTable();
 		//table.setBounds(797, 537, -786, -476);
@@ -172,11 +180,17 @@ public class ListFrame extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
 				//Xóa dữ liệu table cũ
 				model = new DefaultTableModel();
 				
 				//Lấy tên phim
-				String temp = txtTimKiem.getText();				
+				String temp = txtTimKiem.getText();	
+				if(boxdienvien.isSelected())
+					temp += ";dienvien";
+				else
+					temp += ";name";
+				
 				MainView.controller.send_text(temp);
 				System.out.println("Gửi "+temp+" sang server");
 				try {

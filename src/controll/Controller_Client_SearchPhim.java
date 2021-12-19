@@ -74,7 +74,7 @@ public class Controller_Client_SearchPhim {
 				receive = in.readLine(); //đọc định dạng extension
 				receive = this.decrypt_string(receive);
 				temp.extension = receive;
-				System.out.println("extension:"+temp.extension);
+				
 			} catch (IOException e) {
 				return null;
 			}

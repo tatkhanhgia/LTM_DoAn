@@ -24,6 +24,7 @@ import javax.imageio.ImageIO;
 import API.*;
 import Model.Model_Image;
 import Model.Model_RSA;
+import ij.IJ;
 import ij.ImagePlus;
 import ij.io.FileSaver;
 import ij.process.ImageConverter;
@@ -222,21 +223,22 @@ public class Controller_Server_SearchPhim implements Runnable{
 				
 				//Giaỉ mã
 				String decrypt = sessionkey.decrypt_String(receive, sessionkey.mykey);							
-				
+				StringTokenizer token = new StringTokenizer(decrypt, ";", false);
+				if(token.countTokens()<2)
+					if(decrypt.equals("bye"))
+						break;
+				String data = token.nextToken();
+				String type = token.nextToken();
 				//Kiểm tra đầu vào_check input
-				decrypt = this.trim_extend(decrypt);
-				if(check_input(decrypt)==false)			
+				data = this.trim_extend(data);
+				if(check_input(data)==false)			
 				{
 					this.write_to_client("fail_input");
 					continue;
 				}
-				if(decrypt.equals("bye"))
-				{
-					break;
-				}				
 				//In ra thông báo nhận từ client_Print notification
-				System.out.println("Nhận từ client:"+decrypt);
-				this.Get_API_Search_phim(decrypt);												
+				System.out.println("Nhận từ client:"+data);
+				this.Get_API_Search_phim(data,type);												
 			} catch (IOException e) {
 				System.out.println("Client_terminate");
 				break;
@@ -254,16 +256,17 @@ public class Controller_Server_SearchPhim implements Runnable{
 				
 				//Giaỉ mã
 				String decrypt = sessionkey.decrypt_String(receive, sessionkey.mykey);
+				String data = decrypt;
 				System.out.println("Server đã nhận dữ liệu");				
 				
 				//Kiểm tra đầu vào_check input
-				decrypt = this.trim_extend(decrypt);				
+				//decrypt = this.trim_extend(decrypt);				
 				if(decrypt.equals("bye"))
 				{
 					break;
 				}
 				//Đọc dữ liệu theo thứ tự : ảnh - chức năng - saveas(dành cho format) - đuôi ảnh
-				String data = decrypt;
+				
 				receive = in.readLine();				
 				decrypt = sessionkey.decrypt_String(receive, sessionkey.mykey);
 				String chucnang = decrypt;
@@ -283,12 +286,23 @@ public class Controller_Server_SearchPhim implements Runnable{
 	
 	//Hàm gọi API và gửi dữ liệu cho client
 	//Function Call API and send data back to client
-	public void Get_API_Search_phim(String phim) {
+	public void Get_API_Search_phim(String phim,String type) {
 		ParseJsonFromAPI API = new ParseJsonFromAPI();
-		boolean a = API.searchByName(phim);
-		if ( !a) {
-			this.write_to_client("result_fail");
-			return;
+		if ( type.equals("name"))
+		{
+			boolean a = API.searchByName(phim);	
+			if ( !a) {
+				this.write_to_client("result_fail");
+				return;
+			}
+		}
+		if ( type.equals("dienvien"))
+		{
+			boolean a = API.searchByPeople(phim);
+			if ( !a) {
+				this.write_to_client("result_fail");
+				return;
+			}
 		}
 		API.getPosterImage(phim);
 		API.getReviewOfMovie(phim);
@@ -428,8 +442,7 @@ public class Controller_Server_SearchPhim implements Runnable{
 	//Function Call API and edit image send back to client
 	public void Get_API_Image(String imagestring,String chucnang,String saveas,String extension)
 	{
-		try {
-			System.out.println("Vào hàm api");
+		try {			
 			String pathsave = "";
 			
 			//Check xem phải chức năng API không?
@@ -455,9 +468,11 @@ public class Controller_Server_SearchPhim implements Runnable{
 		    ImageIO.write(buffer, extension, outputfile); 
 		    Image images  = ImageIO.read(new File(".\\Image\\temp."+extension));			    
 		    //Tạo đối tượng ImagePlus để thực hiện các chức năng
-			ImagePlus lib = new ImagePlus("anh", images);//Image
-			switch(chucnang) {
-				case "format":{
+			ImagePlus lib = new ImagePlus("anh",images);//Image
+			//xóa ảnh temp vừa tạo ra để hỗ trợ khởi tạo ImagePlus
+			
+			/*switch(chucnang) {
+				case "format":{					
 					FileSaver file = new FileSaver(lib);
 					if(saveas.equals("tif"))
 					{
@@ -485,7 +500,7 @@ public class Controller_Server_SearchPhim implements Runnable{
 					}
 			        break;
 				}
-				case "compress":{
+				case "compress":{					
 					FileSaver file = new FileSaver(lib);
 			        file.setJpegQuality(0);
 			        if(extension.equals("png"))
@@ -510,8 +525,8 @@ public class Controller_Server_SearchPhim implements Runnable{
 			        }			        
 					break;
 				}
-				case "gray":{
-					new ImageConverter(lib).convertToGray8();
+				case "gray":{					
+					new ImageConverter(lib).convertToGray8();					
 					FileSaver file = new FileSaver(lib);
 					if(extension.equals("png"))
 			        {
@@ -535,14 +550,30 @@ public class Controller_Server_SearchPhim implements Runnable{
 			        }			     
 					break;
 				}
-				case "resize":{
+				case "resize":{					
 					ImageProcessor resize = null;
 					if(saveas.equals("small"))				
-					{	resize = lib.getProcessor().resize(lib.getWidth()-500, lib.getHeight()-500, false);}					
+					{	
+						int width = lib.getWidth();
+						int height = lib.getHeight();
+						while(width>100)
+						{
+							width -= 50;
+						}
+						while(height>100)
+						{
+							height -= 50;
+						}
+						resize = lib.getProcessor().resize(width, height, false);
+					}					
 					if(saveas.equals("medium"))
-					{	resize = lib.getProcessor().resize(lib.getWidth()-100, lib.getHeight()-100, false);}
+					{	
+						resize = lib.getProcessor().resize(lib.getWidth()-100, lib.getHeight()-100, false);
+					}
 					if(saveas.equals("large"))
-					{	resize = lib.getProcessor().resize(lib.getWidth()+300, lib.getHeight()+300, false);}					
+					{	
+						resize = lib.getProcessor().resize(lib.getWidth()+300, lib.getHeight()+300, false);
+					}					
 					lib.setProcessor(resize);
 					FileSaver file = new FileSaver(lib);
 					if(extension.equals("png"))
@@ -572,17 +603,154 @@ public class Controller_Server_SearchPhim implements Runnable{
 					return;
 				}
 			}
-			//xóa ảnh temp vừa tạo ra để hỗ trợ khởi tạo ImagePlus
-			//outputfile.deleteOnExit();
+			*/
+			if(chucnang.equals("format"))
+			{
+				FileSaver file = new FileSaver(lib);
+					if(saveas.equals("tif"))
+					{
+						file.saveAsTiff(".\\Image\\format.tif");
+						pathsave = ".\\Image\\format.tif";
+						extension = "tif";
+					}					
+					if(saveas.equals("jpg"))
+					{
+						file.saveAsJpeg(".\\Image\\format.jpg");
+						pathsave = ".\\Image\\format.jpg";
+						extension = "jpg";
+					}
+					if(saveas.equals("gif"))
+					{
+						file.saveAsGif(".\\Image\\format.gif");
+						pathsave = ".\\Image\\format.gif";
+						extension = "gif";
+					}
+					if(saveas.equals("png"))
+					{
+						file.saveAsPng(".\\Image\\format.png");
+						pathsave = ".\\Image\\format.png";
+						extension = "png";
+					}
+				
+			}
+			if(chucnang.equals("compress"))
+			{
+				FileSaver file = new FileSaver(lib);
+		        file.setJpegQuality(0);
+		        if(extension.equals("png"))
+		        {
+		        	
+		        	file.saveAsPng(".\\Image\\compress.png");
+		        	pathsave = ".\\Image\\compress.png";
+		        }
+		        if(extension.equals("jpg"))
+		        {
+		        	File temp = new File(".\\Image\\compress.jpg");
+		        	if( temp.exists())
+		        	{
+		        		temp.delete();
+		        	}
+		        	file.saveAsJpeg(".\\Image\\compress.jpg");
+		        	pathsave = ".\\Image\\compress.jpg";
+		        }
+		        if(extension.equals("tif"))
+		        {
+		        	file.saveAsTiff(".\\Image\\compress.tif");
+		        	pathsave = ".\\Image\\compress.tif";
+		        }
+		        if(extension.equals("gif"))
+		        {
+		        	file.saveAsGif(".\\Image\\compress.gif");
+		        	pathsave = ".\\Image\\compress.gif";
+		        }			      
+			}
+			if(chucnang.equals("gray"))
+			{				
+				new ImageConverter(lib).convertToGray8();					
+				FileSaver file = new FileSaver(lib);
+				if(extension.equals("png"))
+		        {
+		        	file.saveAsPng(".\\Image\\gray.png");
+		        	pathsave = ".\\Image\\gray.png";
+		        }
+		        if(extension.equals("jpg"))
+		        {
+		        	file.saveAsJpeg(".\\Image\\gray.jpg");
+		        	pathsave = ".\\Image\\gray.jpg";
+		        }
+		        if(extension.equals("tif"))
+		        {
+		        	file.saveAsTiff(".\\Image\\gray.tif");
+		        	pathsave = ".\\Image\\gray.tif";
+		        }
+		        if(extension.equals("gif"))
+		        {
+		        	file.saveAsGif(".\\Image\\gray.gif");
+		        	pathsave = ".\\Image\\gray.gif";
+		        }			     
+			}
+			if(chucnang.equals("resize"))
+			{
+				ImageProcessor resize = null;
+				if(saveas.equals("small"))				
+				{	
+					int width = lib.getWidth();
+					int height = lib.getHeight();
+					while(width>100)
+					{
+						width -= 50;
+					}
+					while(height>100)
+					{
+						height -= 50;
+					}
+					resize = lib.getProcessor().resize(width, height, false);
+				}					
+				if(saveas.equals("medium"))
+				{	
+					resize = lib.getProcessor().resize(lib.getWidth()-100, lib.getHeight()-100, false);
+				}
+				if(saveas.equals("large"))
+				{	
+					resize = lib.getProcessor().resize(lib.getWidth()+300, lib.getHeight()+300, false);
+				}					
+				lib.setProcessor(resize);
+				FileSaver file = new FileSaver(lib);
+				if(extension.equals("png"))
+		        {
+		        	file.saveAsPng(".\\Image\\resize.png");
+		        	pathsave = ".\\Image\\resize.png";
+		        }
+		        if(extension.equals("jpg"))
+		        {
+		        	file.saveAsJpeg(".\\Image\\resize.jpg");
+		        	pathsave = ".\\Image\\resize.jpg";
+		        }
+		        if(extension.equals("tif"))
+		        {
+		        	file.saveAsTiff(".\\Image\\resize.tif");
+		        	pathsave = ".\\Image\\resize.tif";
+		        }
+		        if(extension.equals("gif"))
+		        {
+		        	file.saveAsGif(".\\Image\\resize.gif");
+		        	pathsave = ".\\Image\\resize.gif";
+		        }
+			}
+			
 			//Thực hiện đọc các ảnh vừa save để đưa về client			
 			image.path = pathsave;
-			System.out.println("Pathsave:"+pathsave);
-			//File delete = new File(pathsave);
-			//delete.deleteOnExit();
+			
+
 			String send = image.encodeImage();//String image buffer -> byte[] - >string
 			this.write_to_client(send);
 			this.write_to_client(extension);
 			this.write_to_client("end");//Ký hiệu hết giữa client-server
+			File delete = new File(pathsave);
+			delete.deleteOnExit();
+			delete.delete();
+			outputfile.deleteOnExit();
+			outputfile.delete();
 		} catch (IOException e) {
 			this.write_to_client("fail_input");
 		}

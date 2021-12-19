@@ -892,7 +892,7 @@ public class ParseJsonFromAPI {
         return resultAll;
     }
 
-    public ArrayList<String> searchByPeople(String nameOfPeople) {
+    public boolean searchByPeople(String nameOfPeople) {
         ArrayList<String> resultAll = new ArrayList<String>();
         HttpURLConnection connection = null;
         try {
@@ -923,6 +923,11 @@ public class ParseJsonFromAPI {
             String total_pages = object.getString("total_pages");
             String total_results = object.getString("total_results");
 
+            if(object.isNull("total_results")||total_results.equals("0"))
+            {
+            	return false;
+            }
+            arraymovie = new ArrayList<>();
 //            resultAll.add(page);
 //            resultAll.add(total_pages);
 //            resultAll.add(total_results);
@@ -930,7 +935,7 @@ public class ParseJsonFromAPI {
             JSONArray results = object.getJSONArray("results");
             for (int i = 0; i < results.length(); i++) {
                 JSONObject childOfResults = results.getJSONObject(i);
-                String id = childOfResults.getString("id"); // id of actor
+                String idactor = childOfResults.getString("id"); // id of actor
                 String name = childOfResults.getString("name");
                 String known_for_department = childOfResults.getString("known_for_department");
                 String gender = childOfResults.getString("gender");
@@ -939,28 +944,85 @@ public class ParseJsonFromAPI {
 
                 String profile_path = childOfResults.getString("profile_path");
 
-//                resultAll.add(id);
-//                resultAll.add(name);
-//                resultAll.add(known_for_department);
-//                resultAll.add(gender);
-//                resultAll.add(adult);
-//                resultAll.add(popularity);
-//                resultAll.add(profile_path );
 
 //                List of movie which people join
                 JSONArray known_for = childOfResults.getJSONArray("known_for");
                 for (int j = 0; j < known_for.length(); j++) {
                     JSONObject childOfKnownFor = known_for.getJSONObject(j);
-                    String idOfMovie = childOfKnownFor.getString("id"); //important, can use for class SearchByName of movie
+                    //String idOfMovie = childOfKnownFor.getString("id"); //important, can use for class SearchByName of movie
+                    
+                  //Get id
+                    String id ;
+                    if(	childOfKnownFor.isNull("id"))
+                    	id = "Không có dữ liệu";
+                    else
+                    	id = childOfKnownFor.getString("id");
+                    //Get Title
+                    String title;
+                    if(childOfKnownFor.isNull("title"))
+                    	if(childOfKnownFor.isNull("name"))
+                    		title = "Không có dữ liệu";
+                    	else
+                    		title = childOfKnownFor.getString("name");
+                    else
+                    	title =childOfKnownFor.getString("title");
+                    //Get mô tả
+                    String overview;
+                    if(childOfKnownFor.isNull("overview"))
+                    	overview = "Không có dữ liệu";
+                    else
+                    	overview = childOfKnownFor.getString("overview");
+                    //Get ngày ra mắt
+                    String release_date;
+                    if(childOfKnownFor.isNull("release_date"))
+    					release_date = "Không có dữ liệu";
+    				else
+    					release_date = childOfKnownFor.getString("release_date");
+                    //Get ngôn ngữ
+                    String original_language;
+                    if(childOfKnownFor.isNull("original_language"))
+                    	original_language = "Không có dữ liệu";
+                    else
+                    	original_language =childOfKnownFor.getString("original_language");
+                    //Get popularity                          
+                    popularity =childOfResults.getString("popularity");
+                    //Get vote trung binhf                
+                    String vote_average;
+                    if(childOfKnownFor.isNull("vote_average"))
+                    	vote_average = "0";
+                    else
+                    	vote_average =childOfKnownFor.getString("vote_average");
+                    //Get vote count                
+                    String vote_count;
+                    if(childOfKnownFor.isNull("vote_count"))
+                    	vote_count = "0";
+                    else
+                    	vote_count =childOfKnownFor.getString("vote_count");
+//                    get backdrop and poster image
+                    String backdrop_path;
+                    if(childOfKnownFor.isNull("backdrop_path"))
+                    	backdrop_path = "0";
+                    else
+                    	backdrop_path =childOfKnownFor.getString("backdrop_path");
+                    
+                    String poster_path;
+                    if(childOfKnownFor.isNull("poster_path"))
+                    	poster_path = "0";
+                    else
+                    	poster_path =childOfKnownFor.getString("poster_path");
+                    
 
-//                    Some of them can be null !!!
+                    Model_Movie temp = new Model_Movie(id,title,overview,release_date,original_language
+                    						, popularity,vote_average,vote_count,backdrop_path,poster_path);
+                    arraymovie.add(temp);
+
 //                    String media_type = childOfKnownFor.getString("media_type");
 //                    String adultOfMovie = childOfKnownFor.getString("adult");
-//                    String original_language = childOfKnownFor.getString("original_language");
-//                    String title = childOfKnownFor.getString("title");
+//                    xString original_language = childOfKnownFor.getString("original_language");
+//                    String title = childOfKnownFor.getString("title");x
 //                    String original_title = childOfKnownFor.getString("original_title");
-//                    String overview = childOfKnownFor.getString("overview");
-//                    String release_date = childOfKnownFor.getString("release_date");
+//                    String overview = childOfKnownFor.getString("overview");x
+//                    String release_date = childOfKnownFor.getString("release_date");x
 //                    String vote_average = childOfKnownFor.getString("vote_average");
 //                    String vote_count = childOfKnownFor.getString("vote_count");
 //                    String video = childOfKnownFor.getString("video");
@@ -968,7 +1030,7 @@ public class ParseJsonFromAPI {
 //                    String backdrop_path = childOfResults.getString("backdrop_path");
 //                    String poster_path = childOfResults.getString("poster_path");
 
-                    resultAll.add(idOfMovie);
+                  //resultAll.add(idOfMovie);
 //                    resultAll.add(media_type);
 //                    resultAll.add(adultOfMovie);
 //                    resultAll.add(original_language);
@@ -982,10 +1044,6 @@ public class ParseJsonFromAPI {
 //                    resultAll.add(backdrop_path);
 //                    resultAll.add(poster_path);
 
-                    JSONArray genre_ids = childOfKnownFor.getJSONArray("genre_ids");
-                    for (int k = 0; k < genre_ids.length(); k++) {
-                        resultAll.add(genre_ids.get(k).toString());
-                    }
                 }
             }
             reader.close();
@@ -999,7 +1057,7 @@ public class ParseJsonFromAPI {
         catch (IOException e) {
             System.err.println(e.getMessage());
         }
-        return resultAll;
+        return true;
     }
 
     public ArrayList<Image> getProfileImage(String nameOfPeople) {
@@ -1007,7 +1065,7 @@ public class ParseJsonFromAPI {
         HttpURLConnection connection = null;
         try {
             ArrayList<String> profilePath = new ArrayList<String>();
-            profilePath = searchByPeople(nameOfPeople);
+            //profilePath = searchByPeople(nameOfPeople);
             for (int i = 1; i < profilePath.size(); i += 2) {
 //                can switch "w500" and "original" size
                 if (!profilePath.get(i).equals("null")) {
@@ -1130,58 +1188,59 @@ public class ParseJsonFromAPI {
     
     public static void main(String[] args) {
        ParseJsonFromAPI p = new ParseJsonFromAPI();
-       System.out.println(p.removeAccent("xin chào đồng chí hé lô , mắt biếc"));
-//        p.searchByName("Your Name");         
-//		p.getPosterImage("Your Name");
-//		p.getReviewOfMovie("Your Name");
-//		p.getActorOfMovie("Your Name");
-//		p.getDetailOfMovie("Your Name");
-////        int i = 0;
-////        for(;i<p.arraymovie.size();i++)
-////        {
-////        	if(i==10||i==20)
-////        		System.out.println("\n");
-////        	System.out.println(p.arraymovie.get(i).getTitle());
-////        }
-////        p.searchByName("The Death");
-////        p.getKeyOfTrailer(null);
-//        for(int i=0; i<p.arraymovie.size();i++)
-//        {      
-//        	System.out.println("\n\tMovie "+i);
-//        	System.out.println("\n\tDoanh thu: "+p.arraymovie.get(i).getDoanhthu());
-//        	System.out.println("\n\tNgân sách: "+p.arraymovie.get(i).getNgansach());
-//        	ArrayList<String> review = p.arraymovie.get(i).getReview();
-//        	ArrayList<String> author = p.arraymovie.get(i).getAuthor();
-//        	ArrayList<String> crew = p.arraymovie.get(i).getCrew();
-//        	ArrayList<String> cast = p.arraymovie.get(i).getReview();
-//        	System.out.println("ID:"+p.arraymovie.get(i).getId());
-//        	ArrayList<String> theloai = p.arraymovie.get(i).getTheLoai();
-//        	ArrayList<String> company = p.arraymovie.get(i).getCompany();
-////        	System.out.println("độ dài authỏr:"+p.arraymovie.get(i).getAuthor().size());
-////        	System.out.println("độ dài review:"+p.arraymovie.get(i).getReview().size());
-////        	for(int j=0 ; j<review.size();j++)
-////        	{
-////        		String temp = review.get(j).replaceAll("\n", "");
-////        		review.set(j, temp);
-////        		System.out.println("Review:"+j+"="+temp);
-////        	}
-////        	for(int j=0 ; j<author.size();j++)
-////        	{
-////        		System.out.println("AUTHOR:"+j+"="+author.get(j));
-////        	}
-////        	for(int j=0 ; j<cast.size();j++)
-////        	{
-////        		System.out.println("Cast:"+j+"="+cast.get(j));
-////        	}
-//        	for(int j=0 ; j<theloai.size();j++)
-//        	{
-//        		System.out.println("The loai:"+j+"="+theloai.get(j));
-//        	}
-//        	for(int j=0 ; j<company.size();j++)
-//        	{
-//        		System.out.println("Congty:"+j+"="+company.get(j));
-//        	}
+       //System.out.println(p.removeAccent("xin chào đồng chí hé lô , mắt biếc"));
+        //p.searchByName("Your Name");    
+       p.searchByPeople("Tom Holland");
+		p.getPosterImage("Tom Holland");
+		p.getReviewOfMovie("Tom Holland");
+		p.getActorOfMovie("Tom Holland");
+		p.getDetailOfMovie("Tom Holland");
+//        int i = 0;
+//        for(;i<p.arraymovie.size();i++)
+//        {
+//        	if(i==10||i==20)
+//        		System.out.println("\n");
+//        	System.out.println(p.arraymovie.get(i).getTitle());
 //        }
+//        p.searchByName("The Death");
+//        p.getKeyOfTrailer(null);
+        for(int i=0; i<p.arraymovie.size();i++)
+        {      
+        	System.out.println("\n\tMovie "+i);
+        	System.out.println("\n\tDoanh thu: "+p.arraymovie.get(i).getDoanhthu());
+        	System.out.println("\n\tNgân sách: "+p.arraymovie.get(i).getNgansach());
+        	ArrayList<String> review = p.arraymovie.get(i).getReview();
+        	ArrayList<String> author = p.arraymovie.get(i).getAuthor();
+        	ArrayList<String> crew = p.arraymovie.get(i).getCrew();
+        	ArrayList<String> cast = p.arraymovie.get(i).getReview();
+        	System.out.println("ID:"+p.arraymovie.get(i).getId());
+        	ArrayList<String> theloai = p.arraymovie.get(i).getTheLoai();
+        	ArrayList<String> company = p.arraymovie.get(i).getCompany();
+//        	System.out.println("độ dài authỏr:"+p.arraymovie.get(i).getAuthor().size());
+//        	System.out.println("độ dài review:"+p.arraymovie.get(i).getReview().size());
+//        	for(int j=0 ; j<review.size();j++)
+//        	{
+//        		String temp = review.get(j).replaceAll("\n", "");
+//        		review.set(j, temp);
+//        		System.out.println("Review:"+j+"="+temp);
+//        	}
+//        	for(int j=0 ; j<author.size();j++)
+//        	{
+//        		System.out.println("AUTHOR:"+j+"="+author.get(j));
+//        	}
+//        	for(int j=0 ; j<cast.size();j++)
+//        	{
+//        		System.out.println("Cast:"+j+"="+cast.get(j));
+//        	}
+        	for(int j=0 ; j<theloai.size();j++)
+        	{
+        		System.out.println("The loai:"+j+"="+theloai.get(j));
+        	}
+        	for(int j=0 ; j<company.size();j++)
+        	{
+        		System.out.println("Congty:"+j+"="+company.get(j));
+        	}
+        }
         
     }
 

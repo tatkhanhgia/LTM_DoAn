@@ -51,7 +51,7 @@ public class Model_Image {
 		InputStream is = new ByteArrayInputStream(bytes);
         BufferedImage newBi = ImageIO.read(is);
         this.buffered = newBi;
-        return this.buffered;
+        return newBi;
 	}
 	//Hàm chuyển đổi sang byte với tham số truyền vào là BufferedImage
 	public byte[] convert_to_byte_with_buffered(BufferedImage buff,String extension) {
