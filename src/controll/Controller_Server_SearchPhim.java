@@ -449,6 +449,21 @@ public class Controller_Server_SearchPhim {
 		try {
 			System.out.println("Vào hàm api");
 			String pathsave = "";
+			
+			//Check xem phải chức năng API không?
+			if(chucnang.equals("api")) {
+				FindImage a = new FindImage();
+				ArrayList<BufferedImage> result = a.getImages(imagestring);
+				
+				Model_Image temp = new Model_Image();
+				for(int i=0; i<result.size(); i++) {					
+					String send = temp.encodeImage_buffered(result.get(i), "jpg");
+					this.write_to_client(send);
+				}
+				this.write_to_client("end");
+				return;								
+			}
+			
 			//Tạo model để convert từ String sang Image
 			Model_Image image = new Model_Image();
 			image.convert_to_image(imagestring);
@@ -570,8 +585,10 @@ public class Controller_Server_SearchPhim {
 			        }		
 					break;
 				}
-				case "detec":
-				case "api":
+				default:{
+					this.write_to_client("fail_input");
+					return;
+				}
 			}
 			//xóa ảnh temp vừa tạo ra để hỗ trợ khởi tạo ImagePlus
 			//outputfile.deleteOnExit();

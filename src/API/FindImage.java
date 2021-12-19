@@ -17,6 +17,7 @@ import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 //Install vlc mediaplayer first
 public class FindImage {
     final String myKey = "24527112-817d2db7d3c038da5ea701c8e";
-
+    public String totalhits ="";
     public ArrayList<String> getSizeOfImages(String keyword) {
         ArrayList<String> resultAll = new ArrayList<String>();
         HttpURLConnection connection = null;
@@ -63,12 +64,12 @@ public class FindImage {
 
             String total = object.getString("total");
             String totalHits = object.getString("totalHits");
-
+            totalhits = totalHits;
             JSONArray hits = object.getJSONArray("hits");
-            for (int i = 0; i < hits.length(); i++) {
+            for (int i = 0; i < 5; i++) {
                 JSONObject childOfHits = hits.getJSONObject(i);
 //                for (int j = 0; j < childOfHits.length(); j++)
-                for (int j = 0; j < 2; j++) {
+                //for (int j = 0; j < 2; j++) {
                     String id = childOfHits.getString("id");
                     String pageURL = childOfHits.getString("pageURL");
                     String type = childOfHits.getString("type");
@@ -95,11 +96,10 @@ public class FindImage {
 //                    advanced
                     String id_hash = childOfHits.getString("id_hash");
                     String fullHDURL = childOfHits.getString("fullHDURL"); // 1920 x 1080
-                    String imageURL = childOfHits.getString("imageURL"); // original size
-
-                    resultAll.add(id);
-                    resultAll.add(fullHDURL);
-                }
+                    String imageURL = childOfHits.getString("imageURL"); // original size                                        
+                    //resultAll.add(fullHDURL);
+                    resultAll.add(webformatURL);
+                //}
             }
             reader.close();
         }
@@ -115,15 +115,15 @@ public class FindImage {
         return resultAll;
     }
 
-    public ArrayList<Image> getImages(String keyword) {
-        ArrayList<Image> resultAll = new ArrayList<Image>();
+    public ArrayList<BufferedImage> getImages(String keyword) {
+        ArrayList<BufferedImage> resultAll = new ArrayList<BufferedImage>();
         HttpURLConnection connection = null;
         try {
             ArrayList<String> imagePath = new ArrayList<String>();
             imagePath = getSizeOfImages(keyword);
-            for (int i = 1; i < imagePath.size(); i += 2) {
+            for (int i = 0; i < imagePath.size(); i ++) {
                 URL url = new URL(imagePath.get(i));
-                Image image = ImageIO.read(url);
+                BufferedImage image = ImageIO.read(url);
                 resultAll.add(image);
             }
         }
@@ -290,7 +290,7 @@ public class FindImage {
     }
 
     public FindImage() {
-        String keyword = "monaco";
+ //       String keyword = "monaco";
 //        new
 //        ArrayList<JFrame> results = new ArrayList<JFrame>();
 //        results = playVideoFromBrowser(keyword);
@@ -299,56 +299,54 @@ public class FindImage {
 //            System.out.println(results.get(i));
 //        }
 
-//        ArrayList<Image> results = new ArrayList<Image>();
-//        results = getImages(keyword);
+//        ArrayList<String> results = new ArrayList<String>();
+//        results = getVideoOfImages(keyword);
+//        for (int i = 0; i < results.size(); i++) {
+//            JFrame jFrame = new JFrame();
+//            jFrame.setLocation(100, 100);
+//            jFrame.setSize(1000, 600);
+//            jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//            jFrame.setVisible(true);
 //
-//        for (int i = 0; i < results.size(); i += 2) {
-//            JFrame frame = new JFrame();
-//            frame.setSize(1900, 1070);
-//            JLabel label = new JLabel(new ImageIcon(results.get(i)));
-//            frame.add(label);
-//            frame.setVisible(true);
-//        }
-
-        ArrayList<String> results = new ArrayList<String>();
-        results = getVideoOfImages(keyword);
-        for (int i = 0; i < results.size(); i++) {
-            JFrame jFrame = new JFrame();
-            jFrame.setLocation(100, 100);
-            jFrame.setSize(1000, 600);
-            jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            jFrame.setVisible(true);
-
-            Canvas canvas = new Canvas();
-            canvas.setBackground(Color.black);
-
-            JPanel jPanel = new JPanel();
-            jPanel.setLayout(new BorderLayout());
-
-            jPanel.add(canvas);
-            jFrame.add(jPanel);
-
-            NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "D:\\VLC");
-            Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
-
-            MediaPlayerFactory mpf = new MediaPlayerFactory();
-            EmbeddedMediaPlayer emp = mpf.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(jFrame));
-            emp.setVideoSurface(mpf.newVideoSurface(canvas));
-            emp.setFullScreen(false);
-            emp.setPlaySubItems(true);
-            emp.setEnableKeyInputHandling(false);
-            emp.setEnableMouseInputHandling(false);
-
-            String file = results.get(i).toString();
-            emp.prepareMedia(file);
-            emp.play();
-
-//            just play first large video
-            break;
+//            Canvas canvas = new Canvas();
+//            canvas.setBackground(Color.black);
+//
+//            JPanel jPanel = new JPanel();
+//            jPanel.setLayout(new BorderLayout());
+//
+//            jPanel.add(canvas);
+//            jFrame.add(jPanel);
+//
+//            NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), "D:\\VLC");
+//            Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+//
+//            MediaPlayerFactory mpf = new MediaPlayerFactory();
+//            EmbeddedMediaPlayer emp = mpf.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(jFrame));
+//            emp.setVideoSurface(mpf.newVideoSurface(canvas));
+//            emp.setFullScreen(false);
+//            emp.setPlaySubItems(true);
+//            emp.setEnableKeyInputHandling(false);
+//            emp.setEnableMouseInputHandling(false);
+//
+//            String file = results.get(i).toString();
+//            emp.prepareMedia(file);
+//            emp.play();
+//
+////            just play first large video
+//            break;
         }
-    }
 
     public static void main(String[] args) {
         FindImage handle = new FindImage();
+        ArrayList<BufferedImage> results = new ArrayList<BufferedImage>();
+        results = handle.getImages("monaco");
+        System.out.println("Số lượng ảnh tìm được:"+results.get(0));
+        for (int i = 0; i < results.size(); i ++) {
+            JFrame frame = new JFrame();
+            frame.setSize(1900, 1070);
+            JLabel label = new JLabel(new ImageIcon(results.get(i)));
+            frame.add(label);
+            frame.setVisible(true);
+        }
     }
 }

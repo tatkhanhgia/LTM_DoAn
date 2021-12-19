@@ -24,7 +24,7 @@ public class Controller_Client_SearchPhim {
 	private En_Decrypt_AES aes;
 	public ArrayList<Model_Movie> listmovie;
 	
-	//Function Open_Client forsearch
+	//Function Open_Client
 	public void Open_Client(String host, int port)
 	{
 		try {
@@ -55,6 +55,7 @@ public class Controller_Client_SearchPhim {
 		} 
 	}
 	
+	//Hàm để nhận về dữ liệu ảnh khi chạy các chức năng chỉnh sửa
 	public Model_Image Receive_Image()
 	{
 		String receive = "";
@@ -78,6 +79,31 @@ public class Controller_Client_SearchPhim {
 		}		
 	}
 	
+	//Hàm để nhận về dữ liệu các ảnh khi chạy chức năng API (tìm ảnh tương tự)
+	public ArrayList<Model_Image> Receive_API(){
+		String receive = "";
+		ArrayList<Model_Image> array = new ArrayList<Model_Image>();
+					
+		while(true) {
+			try {				
+				receive = in.readLine();
+				if(receive.equals("end"))
+					return array;
+				if(receive.equals("fail_input"))
+					return null;
+				//Đọc và gắn vào Model Image
+				String image = receive;			
+				Model_Image temp = new Model_Image();	
+				temp.convert_to_image(image);				
+				temp.extension = "jpg";			
+				array.add(temp);
+			} catch (IOException e) {
+				return null;
+			}
+		}		
+	}
+	
+	
 	//Function Close Client
 	public void Close_Client()
 	{
@@ -90,6 +116,7 @@ public class Controller_Client_SearchPhim {
 		}
 	}
 	
+	//Hàm để get về phim khi chạy chức năng search phim
 	public String Receiver() throws IOException {		
 		listmovie = new ArrayList();
 		String receive = "";	
@@ -213,6 +240,7 @@ public class Controller_Client_SearchPhim {
 		}								
 	}
 	
+	//Hàm dùng để nhận publickey của server và khởi tạo aes - SSL
 	private boolean Get_PublicKey() {
 		try {
 			//Get public key
@@ -241,6 +269,7 @@ public class Controller_Client_SearchPhim {
 		}
 	}
 	
+	//Hàm dùng để gửi dữ liệu cho server
 	public void send_text(String send)
 	{
 		try {			
@@ -254,32 +283,32 @@ public class Controller_Client_SearchPhim {
 
 	}
 	
-	
+	//Hàm dùng để chạy trailer cho chức năng search phim
 	public void play(String id) {
 		ParseJsonFromAPI a = new ParseJsonFromAPI();
 		a.playTrailerFromBrowser2(id);
 	}
 	
 	public static void main(String[] args) throws IOException, InterruptedException {
-		Controller_Client_SearchPhim a = new Controller_Client_SearchPhim();
-		a.Open_Client("localhost", 6000);
-		a.send_text("anh");
-//		a.send_text("blackpink");
-//		String temp = a.Receiver();
-//		System.out.println("\n\n"+temp);
-//		System.out.println("\n\nSố lượng listmovie"+a.listmovie.size());
-		String test = "C:\\Users\\gia\\Desktop\\BG\\1.jpg";
-		Model_Image temp = new Model_Image();
-		temp.path = test;
-		a.send_text(temp.encodeImage());		
-		a.send_text("resize");
-		a.send_text("large");
-		a.send_text("jpg");
-		
-		a.Receive_Image();
-		a.send_text("bye");
-		a.send_text("bye");
-		a.Close_Client();
+//		Controller_Client_SearchPhim a = new Controller_Client_SearchPhim();
+//		a.Open_Client("localhost", 6000);
+//		a.send_text("anh");
+////		a.send_text("blackpink");
+////		String temp = a.Receiver();
+////		System.out.println("\n\n"+temp);
+////		System.out.println("\n\nSố lượng listmovie"+a.listmovie.size());
+//		String test = "C:\\Users\\gia\\Desktop\\BG\\1.jpg";
+//		Model_Image temp = new Model_Image();
+//		temp.path = test;
+//		a.send_text(temp.encodeImage());		
+//		a.send_text("resize");
+//		a.send_text("large");
+//		a.send_text("jpg");
+//		
+//		a.Receive_Image();
+//		a.send_text("bye");
+//		a.send_text("bye");
+//		a.Close_Client();
 	}
 
 }

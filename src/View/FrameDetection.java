@@ -4,6 +4,8 @@ package View;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -45,50 +47,50 @@ public class FrameDetection extends JFrame implements ActionListener {
 
     private Table table;
     private JButton predict;
-    private JButton incep;
+    
     private JButton img;
-    private JFileChooser incepch;
+    
     private JFileChooser imgch;
     private JLabel viewer;
     private JTextField result;
     private JTextField imgpth;
-    private JTextField modelpth;
+    
     private FileNameExtensionFilter imgfilter = new FileNameExtensionFilter(
             "JPG & JPEG Images", "jpg", "jpeg");
-    private String modelpath = ".\\scr\\Detection\\inception_dec_2015";
+    private String modelpath = "src\\Detection\\inception_dec_2015";
     private String imagepath;
     private boolean modelselected = true;
     private byte[] graphDef = readAllBytesOrExit(Paths.get(modelpath, "tensorflow_inception_graph.pb"));    
     private List<String> labels = readAllLinesOrExit(Paths.get(modelpath, "imagenet_comp_graph_label_strings.txt"));
 
-    public FrameDetection() {
+    public FrameDetection(JFrame parent) {
         setTitle("Object Recognitio");
         setSize(500, 500);
         table = new Table();
 
         predict = new JButton("Predict");
         predict.setEnabled(false);
-        incep = new JButton("Choose Inception");
+        
         img = new JButton("Choose Image");
-        incep.addActionListener(this);
+        
         img.addActionListener(this);
         predict.addActionListener(this);
 
-        incepch = new JFileChooser();
+        
         imgch = new JFileChooser();
         imgch.setFileFilter(imgfilter);
         imgch.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        incepch.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        
 
         result=new JTextField();
-        modelpth=new JTextField();
+        
         imgpth=new JTextField();
-        modelpth.setEditable(false);
+        
         imgpth.setEditable(false);
         viewer = new JLabel();
         getContentPane().add(table);
-        table.addCell(modelpth).width(250);
-        table.addCell(incep);
+        
+        
         table.row();
         table.addCell(imgpth).width(250);
         table.addCell(img);
@@ -100,14 +102,58 @@ public class FrameDetection extends JFrame implements ActionListener {
         table.row();
         table.addCell(result).width(300).colspan(2);
         table.row();
-        table.addCell(new JLabel("By: Taha Emara")).center().padTop(30).colspan(2);
-        table.row();
-        table.addCell(new JLabel("Email: taha@emaraic.com")).center().colspan(2);
+        table.addCell(new JLabel("By: LTM-10")).center().padTop(30).colspan(2);
+        
+        
 
         setLocationRelativeTo(null);
 
         setResizable(false);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.addWindowListener(new WindowListener() {
+			
+			@Override
+			public void windowOpened(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowIconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+				parent.setVisible(true);
+				
+			}
+			
+			@Override
+			public void windowClosed(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowActivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
     }
 
     @Override
@@ -117,12 +163,13 @@ public class FrameDetection extends JFrame implements ActionListener {
             int returnVal = imgch.showOpenDialog(FrameDetection.this);
             if (returnVal == JFileChooser.APPROVE_OPTION) {
                 try {
+                	//Get file và lấy ảnh
                     File file = imgch.getSelectedFile();
                     imagepath = file.getAbsolutePath();
                     imgpth.setText(imagepath);
                     System.out.println("Image Path: " + imagepath);
-                    Image img = ImageIO.read(file);
-
+                    //đọc ảnh
+                    Image img = ImageIO.read(file);                    
                     viewer.setIcon(new ImageIcon(img.getScaledInstance(200, 200, 200)));
                     if (modelselected) {
                         predict.setEnabled(true);
@@ -140,13 +187,12 @@ public class FrameDetection extends JFrame implements ActionListener {
                 float[] labelProbabilities = executeInceptionGraph(graphDef, image);
                 int bestLabelIdx = maxIndex(labelProbabilities);
                 result.setText("");
+                GUI_Client_XuLyAnh.stringdetec = labels.get(bestLabelIdx);
+                GUI_Client_XuLyAnh.flag_detec = true;
                 result.setText(String.format(
                         "BEST MATCH: %s (%.2f%% likely)",
                         labels.get(bestLabelIdx), labelProbabilities[bestLabelIdx] * 100f));
-                System.out.println(
-                        String.format(
-                                "BEST MATCH: %s (%.2f%% likely)",
-                                labels.get(bestLabelIdx), labelProbabilities[bestLabelIdx] * 100f));
+               
             }
 
         }
@@ -259,8 +305,7 @@ public class FrameDetection extends JFrame implements ActionListener {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new FrameDetection().setVisible(true);
-
+                //new FrameDetection().setVisible(true);
             }
         });
     }
