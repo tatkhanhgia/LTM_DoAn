@@ -897,6 +897,7 @@ public class ParseJsonFromAPI {
         HttpURLConnection connection = null;
         try {
             String handleNameOfPeople = nameOfPeople.trim();
+            handleNameOfPeople = removeAccent(handleNameOfPeople);
             handleNameOfPeople = handleNameOfPeople.replaceAll("\\s+", "+");
             handleNameOfPeople = handleNameOfPeople.replaceAll("[^a-zA-Z0-9+]", "");
 
