@@ -204,8 +204,8 @@ public class Model_Movie {
 		return Base64.getDecoder().decode(imageDataString);
 	}
 	
-	public void convert_to_image(String input) throws IOException {
-		byte[] bytes = this.decodeImage(input);
+	public void convert_to_image(String imageDataString) throws IOException {
+		byte[] bytes = this.decodeImage(imageDataString);
 		InputStream is = new ByteArrayInputStream(bytes);
         BufferedImage newBi = ImageIO.read(is);
         this.poster_image = newBi;

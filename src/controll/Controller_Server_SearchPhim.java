@@ -29,16 +29,18 @@ import ij.io.FileSaver;
 import ij.process.ImageConverter;
 import ij.process.ImageProcessor;
 
-public class Controller_Server_SearchPhim {
-	private BufferedReader 	in;				//read from pipe socket
-	private BufferedWriter 	out;			//write to pipe
-	private ServerSocket 	listen; 		//Socket Communicate
-	private Socket			socket_server;	//Socket in server
+public class Controller_Server_SearchPhim implements Runnable{
+	private Thread thread;					//Thread
+	private String namethread;				//Tên thread
+	public BufferedReader 	in;				//read from pipe socket
+	public BufferedWriter 	out;			//write to pipe
+	public ServerSocket 	listen; 		//Socket Communicate
+	public Socket			socket_server;	//Socket in server
 	private Model_RSA		keyrsa;			//Use for SSL Handshake
 	private En_Decrypt_AES	sessionkey;		//Key AES
 	
 	//Constructor
-	public Controller_Server_SearchPhim()
+	public Controller_Server_SearchPhim ()
 	{
 		this.in  		   = null;
 		this.out 		   = null;
@@ -61,11 +63,11 @@ public class Controller_Server_SearchPhim {
 			String typeserver ="";			
 			
 			//SSLHandShake
-			this.Start_SSL_Handshake();
+			this.Start_SSL_Handshake(); //session
 			
 			//Communication
 			while(true) {
-				typeserver = in.readLine();
+				typeserver = in.readLine(); 
 				//Giaỉ mã
 				String decrypt = sessionkey.decrypt_String(typeserver, sessionkey.mykey);	
 				System.out.println("Giaỉ mã loại server:"+decrypt);
@@ -99,36 +101,18 @@ public class Controller_Server_SearchPhim {
 				break;
 			}			
 		} //Loop while
-		this.Close_Server();
+		this.Close_Server();//
 	}
 	
-	//Function write to client with array String
-	private void write_to_client(String[] array)
-	{
-		/*	Example:  String[] example = new String[]{"hello","world","end"};
-		 *				this.write_to_client(example);
-		 * => write array String example to client
-		 */
-		for(String a:array)
-		{
-			try {
-				out.write(a);
-				out.newLine();
-				out.flush();
-			} catch (IOException e) {			
-				System.out.println("IOException in function write_to_client!");
-			}			
-		}
-	}
-	
-	//Function write to client
+	//Function write to client có mã hóa
 	private void write_to_client(String input)
 	{
 		 /*	Example:  this.write_to_client("end");
 		 * => write String "end" to client
 		 */
 		try{
-			out.write(input); out.newLine(); out.flush();
+			String encrypt = sessionkey.encrypt_String(input, sessionkey.mykey);
+			out.write(encrypt); out.newLine(); out.flush();
 		} catch (IOException e) {
 			System.out.println("IOException in function write_to_client");
 		}
@@ -174,7 +158,7 @@ public class Controller_Server_SearchPhim {
 			keyrsa.privatekey = keyrsa.getPrivateKey();
 			String publickey = keyrsa.getPublicKey_ToString();
 			System.out.println("Publickey của server: "+keyrsa.publickey+"\n");
-			this.write_to_client(publickey);
+			out.write(publickey); out.newLine(); out.flush();
 			return true;
 		}
 		catch(Exception e)
@@ -189,8 +173,7 @@ public class Controller_Server_SearchPhim {
 		try {
 			String sessionkey = in.readLine();
 			System.out.println("SessionKey nhận từ client(chưa mã hóa):"+sessionkey);
-			String temp = keyrsa.decrypt(sessionkey);
-			
+			String temp = keyrsa.decrypt(sessionkey);			
 			this.sessionkey = new En_Decrypt_AES();
 			this.sessionkey.mykey = temp;
 			System.out.println("SessionKey sau mã hóa:"+this.sessionkey.mykey);
@@ -250,8 +233,7 @@ public class Controller_Server_SearchPhim {
 				if(decrypt.equals("bye"))
 				{
 					break;
-				}
-				
+				}				
 				//In ra thông báo nhận từ client_Print notification
 				System.out.println("Nhận từ client:"+decrypt);
 				this.Get_API_Search_phim(decrypt);												
@@ -466,14 +448,14 @@ public class Controller_Server_SearchPhim {
 			
 			//Tạo model để convert từ String sang Image
 			Model_Image image = new Model_Image();
-			image.convert_to_image(imagestring);
+			image.convert_to_image(imagestring);//Buffer
 			//Tạo ảnh			
-			BufferedImage buffer = image.buffered;
+			BufferedImage buffer = image.buffered;//Buffer
 		    File outputfile = new File(".\\Image\\temp."+extension);
 		    ImageIO.write(buffer, extension, outputfile); 
 		    Image images  = ImageIO.read(new File(".\\Image\\temp."+extension));			    
 		    //Tạo đối tượng ImagePlus để thực hiện các chức năng
-			ImagePlus lib = new ImagePlus("anh", images);
+			ImagePlus lib = new ImagePlus("anh", images);//Image
 			switch(chucnang) {
 				case "format":{
 					FileSaver file = new FileSaver(lib);
@@ -597,7 +579,7 @@ public class Controller_Server_SearchPhim {
 			System.out.println("Pathsave:"+pathsave);
 			//File delete = new File(pathsave);
 			//delete.deleteOnExit();
-			String send = image.encodeImage();
+			String send = image.encodeImage();//String image buffer -> byte[] - >string
 			this.write_to_client(send);
 			this.write_to_client(extension);
 			this.write_to_client("end");//Ký hiệu hết giữa client-server
@@ -606,16 +588,24 @@ public class Controller_Server_SearchPhim {
 		}
 	}
 	
-	//Hàm nhận diện ảnh
-	public void Detection() {
-		
-	}
 	
 	public static void main(String[] args) {
 		Controller_Server_SearchPhim a = new Controller_Server_SearchPhim();
 		a.Open_Server(6000);		
-//		ParseJsonFromAPI a = new ParseJsonFromAPI();
-//		a.playTrailerFromBrowser2("ukJ5dMYx2no");
 	}
 
+	@Override
+	public void run() {
+		
+		
+	}
+	
+	public void start() {
+		System.out.println("Start thread:"+this.namethread);
+		if(thread == null)
+		{
+			thread = new Thread(this, namethread);			
+			thread.start();
+		}
+	}
 }

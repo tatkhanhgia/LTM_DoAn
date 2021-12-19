@@ -20,6 +20,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
@@ -27,7 +29,7 @@ public class MainView extends JFrame {
 	private JButton btnXLAnh;
 	private JButton btnXLPhim;
 	private JPanel contentPane;
-	private RunMedia_BackGround a ;
+	private static RunMedia_BackGround a =null;
 	private int flagstop = 0;
 	public static Controller_Client_SearchPhim controller=null;
 	/**
@@ -75,6 +77,52 @@ public class MainView extends JFrame {
 		setResizable(false);
 		setTitle("ỨNG DỤNG SEARCH PHIM & XỬ LÝ ẢNH");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.addWindowListener(new WindowListener() {
+			
+			@Override
+			public void windowOpened(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowIconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+				MainView.controller.send_text("bye");
+				MainView.controller.send_text("bye");
+				MainView.controller.Close_Client();
+				
+			}
+			
+			@Override
+			public void windowClosed(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowActivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		setBounds(100, 100, 902, 569);
 		setLocationRelativeTo(null);
         setResizable(false);
@@ -325,8 +373,10 @@ public class MainView extends JFrame {
 	}
 
 	private void runmedia() {
-		a = new RunMedia_BackGround();
-		a.init();
-		a.start();
+		if(a==null) {
+			a = new RunMedia_BackGround();
+			a.init();
+			a.start();
+		}
 	}
 }

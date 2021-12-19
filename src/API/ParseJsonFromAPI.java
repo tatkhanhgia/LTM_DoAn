@@ -85,7 +85,11 @@ public class ParseJsonFromAPI {
                 String id = childOfResults.getString("id");
                 String title = childOfResults.getString("title");
                 String overview = childOfResults.getString("overview");
-                String release_date = childOfResults.getString("release_date");
+                String release_date;
+                if(childOfResults.isNull("release_date"))
+					release_date = "null";
+				else
+                release_date = childOfResults.getString("release_date");
                 String original_language = childOfResults.getString("original_language");
                 String popularity = childOfResults.getString("popularity");
                 String vote_average = childOfResults.getString("vote_average");

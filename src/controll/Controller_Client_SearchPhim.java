@@ -21,8 +21,8 @@ public class Controller_Client_SearchPhim {
 	private BufferedReader in;
 	private BufferedWriter out;
 	private String key;
-	private En_Decrypt_AES aes;
-	public ArrayList<Model_Movie> listmovie;
+	private En_Decrypt_AES sessionkey;			//SessionKey
+	public ArrayList<Model_Movie> listmovie;	//Lưu trữ movie
 	
 	//Function Open_Client
 	public void Open_Client(String host, int port)
@@ -63,6 +63,7 @@ public class Controller_Client_SearchPhim {
 		while(true) {
 			try {				
 				receive = in.readLine();
+				receive = this.decrypt_string(receive);
 				if(receive.equals("end"))
 					return temp;
 				if(receive.equals("fail_input"))
@@ -71,6 +72,7 @@ public class Controller_Client_SearchPhim {
 				String image = receive;				
 				temp.convert_to_image(image);
 				receive = in.readLine(); //đọc định dạng extension
+				receive = this.decrypt_string(receive);
 				temp.extension = receive;
 				System.out.println("extension:"+temp.extension);
 			} catch (IOException e) {
@@ -87,6 +89,7 @@ public class Controller_Client_SearchPhim {
 		while(true) {
 			try {				
 				receive = in.readLine();
+				receive = this.decrypt_string(receive);
 				if(receive.equals("end"))
 					return array;
 				if(receive.equals("fail_input"))
@@ -120,8 +123,8 @@ public class Controller_Client_SearchPhim {
 	public String Receiver() throws IOException {		
 		listmovie = new ArrayList();
 		String receive = "";	
-		while(true) {										
-				receive = in.readLine();
+		while(true) {														
+				receive = this.decrypt_string(in.readLine());
 				if (receive.equals("end"))
 					return "end";
 				if (receive.equals("fail_input"))
@@ -130,31 +133,31 @@ public class Controller_Client_SearchPhim {
 					return "fail_search";
 				Model_Movie movie = new Model_Movie();
 				movie.setId(receive);	//Gắn id
-				receive = in.readLine();
+				receive = this.decrypt_string(in.readLine());
 				movie.setTitle(receive);	//Gắn title
-				receive = in.readLine();
+				receive = this.decrypt_string(in.readLine());
 				movie.setOri(receive);	//Gắn ngôn ngữ
-				receive = in.readLine();
+				receive = this.decrypt_string(in.readLine());
 				movie.setDate(receive);	//Gắn release date
-				receive = in.readLine();
+				receive = this.decrypt_string(in.readLine());
 				movie.setOverview(receive);	//Gắn mô tả
-				receive = in.readLine();
+				receive = this.decrypt_string(in.readLine());
 				movie.setVote_av(receive);	//Gắn vote
-				receive = in.readLine();
+				receive = this.decrypt_string(in.readLine());
 				movie.setVote_count(receive);	//Gắn vote
-				receive = in.readLine();
+				receive = this.decrypt_string(in.readLine());
 				movie.setNgansach(receive);	//Gắn ngân sách
-				receive = in.readLine();
+				receive = this.decrypt_string(in.readLine());
 				movie.setDoanhthu(receive);	//Gắn doanh thu
 				
-				receive = in.readLine();	//gắn poster
-				if (receive.equals("null"))
+				receive = this.decrypt_string(in.readLine());
+				if (receive.equals("null"))	//gẮN poster
 					movie.setPoster_image(null);
 				else
 					movie.convert_to_image(receive);				
-				receive = in.readLine();
+				receive = this.decrypt_string(in.readLine());
 				movie.poster_path_url = receive;	//Gắn posterpath
-				receive = in.readLine();
+				receive = this.decrypt_string(in.readLine());
 				movie.setKeyTrailer(receive); 		//Gắn key trailer
 				
 				//Tạo các arraylist để lưu dữ liệu vào và add vào Object Movie
@@ -165,7 +168,7 @@ public class Controller_Client_SearchPhim {
 				ArrayList<String> theloai  = new ArrayList();
 				ArrayList<String> company  = new ArrayList();
 				while (true) {
-					receive = in.readLine();
+					receive = this.decrypt_string(in.readLine());
 					if(receive.equals("null"))
 					{
 						authorr.add("null");	//Nếu null thì add chữ null để hiện ra màn hình
@@ -176,7 +179,7 @@ public class Controller_Client_SearchPhim {
 					authorr.add(receive);
 				}
 				while (true) {
-					receive = in.readLine();
+					receive = this.decrypt_string(in.readLine());
 					if(receive.equals("null"))
 					{
 						review.add("null");
@@ -187,7 +190,7 @@ public class Controller_Client_SearchPhim {
 					review.add(receive);					
 				}
 				while (true) {
-					receive = in.readLine();
+					receive = this.decrypt_string(in.readLine());
 					if(receive.equals("null"))
 					{
 						cast.add("null");
@@ -198,7 +201,7 @@ public class Controller_Client_SearchPhim {
 					cast.add(receive);
 				}
 				while (true) {
-					receive = in.readLine();
+					receive = this.decrypt_string(in.readLine());
 					if(receive.equals("null"))
 					{
 						crew.add("null");
@@ -209,7 +212,7 @@ public class Controller_Client_SearchPhim {
 					crew.add(receive);
 				}
 				while (true) {
-					receive = in.readLine();
+					receive = this.decrypt_string(in.readLine());
 					if(receive.equals("null"))
 					{
 						theloai.add("null");
@@ -220,7 +223,7 @@ public class Controller_Client_SearchPhim {
 					theloai.add(receive);
 				}
 				while (true) {
-					receive = in.readLine();
+					receive = this.decrypt_string(in.readLine());
 					if(receive.equals("null"))
 					{
 						company.add("null");
@@ -250,11 +253,11 @@ public class Controller_Client_SearchPhim {
 			rsa.setPublicKey(receive);
 			System.out.println("Publickey_sau chinh:"+rsa.publickey);
 			//Create AES key
-			aes = new En_Decrypt_AES();			
-			this.key = aes.createKey(); 
+			sessionkey = new En_Decrypt_AES();			
+			this.key = sessionkey.createKey(); 
 			System.out.println("Sessionkey:"+this.key);
 			//Encrypt AES key
-			String cipherkey = rsa.encrypt(aes.mykey);			
+			String cipherkey = rsa.encrypt(sessionkey.mykey);			
 			System.out.println("Sessionkey_cipher:"+cipherkey);			
 			//Send to server
 			out.write(cipherkey);			
@@ -273,8 +276,8 @@ public class Controller_Client_SearchPhim {
 	public void send_text(String send)
 	{
 		try {			
-			System.out.println("Trước mã hsoa:"+send);
-			String encrypt = aes.encrypt_String(send, key);
+			System.out.println("Trước mã hóa:"+send);
+			String encrypt = sessionkey.encrypt_String(send, key);
 			out.write(encrypt);
 			out.newLine();
 			out.flush();
@@ -287,6 +290,12 @@ public class Controller_Client_SearchPhim {
 	public void play(String id) {
 		ParseJsonFromAPI a = new ParseJsonFromAPI();
 		a.playTrailerFromBrowser2(id);
+	}
+	
+	//Hàm dùng để giải mã lại khi nhận từ server
+	public String decrypt_string(String input) {
+		String data = sessionkey.decrypt_String(input, sessionkey.mykey);
+		return data;
 	}
 	
 	public static void main(String[] args) throws IOException, InterruptedException {

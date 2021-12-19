@@ -89,7 +89,7 @@ public class GUI_Client_XuLyAnh extends JFrame {
 //		controll.Open_Client("localhost", 6000);
 //		controll.send_text("anh");
 		setTitle("TRANG XỬ LÝ ẢNH");
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.addWindowListener(new WindowListener() {
 			
 			@Override
@@ -121,7 +121,7 @@ public class GUI_Client_XuLyAnh extends JFrame {
 				MainView.controller.send_text("bye");
 				MainView.controller.send_text("bye");
 				MainView.controller.Close_Client();
-				this.windowClosing(e);
+				
 			}
 			
 			@Override
@@ -381,8 +381,8 @@ public class GUI_Client_XuLyAnh extends JFrame {
 				object.path = path;
 				String send = object.encodeImage();
 				//Gửi đến server theo định dạng : data - chức năng - saveas(dành cho format) - đuôi extension hiện tại
-				MainView.controller.send_text(send);
-				MainView.controller.send_text("format");
+				MainView.controller.send_text(send);//
+				MainView.controller.send_text("format");//
 				if (choose==0) MainView.controller.send_text("png");
 				if (choose==1) MainView.controller.send_text("jpg");
 				if (choose==2) MainView.controller.send_text("tif");
@@ -521,8 +521,7 @@ public class GUI_Client_XuLyAnh extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				FrameDetection frame = new FrameDetection(a);
 				a.setVisible(false);
-				frame.setVisible(true);
-				
+				frame.setVisible(true);				
 			}
 		});
 	}

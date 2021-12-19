@@ -470,7 +470,7 @@ public class GUI_Client_Search extends JFrame {
 			
 			@Override
 			public void windowClosing(WindowEvent e) {
-				MainView.controller.send_text("bye");
+				MainView.controller.send_text("bye");//typeserver
 				MainView.controller.send_text("bye");
 				MainView.controller.Close_Client();
 				

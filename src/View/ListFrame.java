@@ -39,7 +39,6 @@ public class ListFrame extends JFrame {
 	JScrollPane jScrollPane1;
 	Vector header;
 
-	
 	public static void main(String[] args) {
 		try
 		{
@@ -181,7 +180,7 @@ public class ListFrame extends JFrame {
 				MainView.controller.send_text(temp);
 				System.out.println("Gửi "+temp+" sang server");
 				try {
-					String result = MainView.controller.Receiver();
+					String result = MainView.controller.Receiver();//đợi
 					if(result.equals("fail_input"))
 					{
 						JOptionPane.showMessageDialog(null, "Lỗi nhập! Vui lòng không nhập chữ cái + kí tự lạ!","Lỗi nhập liệu",JOptionPane.CANCEL_OPTION);
