@@ -267,7 +267,7 @@ public class GUI_Client_XuLyAnh extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser file = new JFileChooser();
-				file.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				//file.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				file.setAcceptAllFileFilterUsed(false);
 				//Cách 1 : Filter những định dạng ảnh
 				file.setFileFilter(new FileFilter() {			
@@ -302,7 +302,7 @@ public class GUI_Client_XuLyAnh extends JFrame {
 		            String filename = file.getSelectedFile().getName();
 		            String dir = file.getCurrentDirectory().toString();
 		            path = dir+"\\"+filename;		//Get path ảnh
-		            System.out.println("Path ảnh:"+path);
+		            
 		            StringTokenizer token = new StringTokenizer(path,".",false);
 		            token.nextToken();
 		            extension = token.nextToken();	//Get đuôi ảnh
@@ -313,7 +313,7 @@ public class GUI_Client_XuLyAnh extends JFrame {
 						Image dimg = temp2.getScaledInstance(image.getWidth(), image.getHeight(),
 							        Image.SCALE_SMOOTH);
 						image.setIcon(new ImageIcon(dimg));
-						System.out.println("path:"+path);
+					
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}		           
@@ -391,8 +391,9 @@ public class GUI_Client_XuLyAnh extends JFrame {
 				Object[] option = {"PNG","JPG","TIF","GIF"};
 				int choose = JOptionPane.showOptionDialog(null,"Chọn định dạng ảnh","Định dạng", 
 						JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, option, null);
-				
-				
+				if(choose == -1)
+					return;
+				System.out.println("lựa chọn"+choose);
 				//Tạo model ảnh để lưu trữ dữ liệu + các hàm chuyển đổi ảnh
 				Model_Image object = new  Model_Image();				
 				object.path = path;
@@ -420,6 +421,7 @@ public class GUI_Client_XuLyAnh extends JFrame {
 					        Image.SCALE_SMOOTH);
 				image.setIcon(new ImageIcon(dimg));
 				click = true;
+				
 			}
 		});		
 	}
@@ -434,7 +436,7 @@ public class GUI_Client_XuLyAnh extends JFrame {
 					JOptionPane.showMessageDialog(null,"Lỗi!Vui lòng lưu ảnh trước!","Lỗi",JOptionPane.CANCEL_OPTION);
 					return;
 				}
-				
+//				
 				//Check đã upload ảnh chưa
 				if(path.equals("null"))
 				{
@@ -487,7 +489,8 @@ public class GUI_Client_XuLyAnh extends JFrame {
 				Object[] option = {"Small","Medium","Large"};
 				int choose = JOptionPane.showOptionDialog(null,"Chọn định dạng ảnh","Định dạng", 
 						JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, option, null);				
-								
+				if(choose == -1)
+					return;		
 				//Tạo model ảnh để lưu trữ dữ liệu + các hàm chuyển đổi ảnh
 				Model_Image object = new  Model_Image();				
 				object.path = path;

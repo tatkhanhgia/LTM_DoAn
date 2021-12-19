@@ -261,6 +261,11 @@ public class ListFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int i = table.getSelectedRow();
+				if(i<0)
+				{
+					JOptionPane.showMessageDialog(null,"Vui lòng chọn phim để xem chi tiết","Lỗi",JOptionPane.CANCEL_OPTION);
+					return;
+				}
 				System.out.println("row:"+i);
 				GUI_Client_Search a = new GUI_Client_Search(i);
                 a.setVisible(true);
