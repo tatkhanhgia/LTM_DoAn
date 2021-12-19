@@ -272,7 +272,7 @@ public class MainView extends JFrame {
 		//Add sự kiện cho các button
 		this.AddActionButtonPhim(this);
 		this.AddActionButtonAnh(this);
-		this.runmedia();
+		//this.runmedia();
 	}
 
 

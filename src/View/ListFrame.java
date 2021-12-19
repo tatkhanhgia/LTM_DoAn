@@ -72,7 +72,7 @@ public class ListFrame extends JFrame {
 	 */
 	public ListFrame() {
 		setTitle("List Frame");
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 850, 600);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -189,9 +189,10 @@ public class ListFrame extends JFrame {
 					if(result.equals("fail_search"))
 					{
 						JOptionPane.showMessageDialog(null, "Không tìm thấy tên phim","Lỗi",JOptionPane.CANCEL_OPTION);
+						model = new DefaultTableModel(header, 0);
+						table.setModel(model);
 						return;
-					}
-
+					}					
 					ArrayList<Model_Movie> array = MainView.controller.listmovie;
 					//UPLOAD lên table
 					if (model.getRowCount() == 0) {                         //KHÔNG CHO NGDUNG CHỈNH SỬA TRÊN TABLE
