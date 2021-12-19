@@ -49,17 +49,36 @@ public class Controller_Server_SearchPhim implements Runnable{
 		this.socket_server = null;
 	}
 	
+	public void setSocket(Socket a) {
+		this.socket_server = a;
+		this.setIN_OUT();
+	}
+	public void setIN_OUT() {
+		try {
+			out = new BufferedWriter(new OutputStreamWriter(socket_server.getOutputStream()));
+			in = new BufferedReader(new InputStreamReader(socket_server.getInputStream()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void setNameThread(String name)
+	{
+		this.namethread = name;
+	}
 	//Function Open Server
 	public void Open_Server(int port)
 	{
 		while(true) {
 		try {
-			listen = new ServerSocket(port);
-			System.out.println("Server open port - waiting for accept");
-			socket_server = listen.accept();
-			System.out.println("Server accepted Client");			
-			out = new BufferedWriter(new OutputStreamWriter(socket_server.getOutputStream()));
-			in = new BufferedReader(new InputStreamReader(socket_server.getInputStream()));
+			//listen = new ServerSocket(port);
+			//System.out.println("Server open port - waiting for accept");
+			//socket_server = listen.accept();
+			//System.out.println("Server accepted Client");			
+			//out = new BufferedWriter(new OutputStreamWriter(socket_server.getOutputStream()));
+			//in = new BufferedReader(new InputStreamReader(socket_server.getInputStream()));
 			
 			String typeserver ="";			
 			
@@ -468,7 +487,8 @@ public class Controller_Server_SearchPhim implements Runnable{
 		    ImageIO.write(buffer, extension, outputfile); 
 		    Image images  = ImageIO.read(new File(".\\Image\\temp."+extension));			    
 		    //Tạo đối tượng ImagePlus để thực hiện các chức năng
-			ImagePlus lib = new ImagePlus("anh",images);//Image
+			//ImagePlus lib = new ImagePlus("anh",images);//Image
+		    ImagePlus lib = IJ.openImage(".\\Image\\temp."+extension);
 			//xóa ảnh temp vừa tạo ra để hỗ trợ khởi tạo ImagePlus
 			
 			/*switch(chucnang) {
@@ -635,21 +655,16 @@ public class Controller_Server_SearchPhim implements Runnable{
 			}
 			if(chucnang.equals("compress"))
 			{
+				
 				FileSaver file = new FileSaver(lib);
 		        file.setJpegQuality(0);
 		        if(extension.equals("png"))
-		        {
-		        	
+		        {		        	
 		        	file.saveAsPng(".\\Image\\compress.png");
 		        	pathsave = ".\\Image\\compress.png";
 		        }
 		        if(extension.equals("jpg"))
 		        {
-		        	File temp = new File(".\\Image\\compress.jpg");
-		        	if( temp.exists())
-		        	{
-		        		temp.delete();
-		        	}
 		        	file.saveAsJpeg(".\\Image\\compress.jpg");
 		        	pathsave = ".\\Image\\compress.jpg";
 		        }
@@ -738,11 +753,11 @@ public class Controller_Server_SearchPhim implements Runnable{
 		        }
 			}
 			
-			//Thực hiện đọc các ảnh vừa save để đưa về client			
-			image.path = pathsave;
-			
+			//Thực hiện đọc các ảnh vừa save để đưa về client	
+			Model_Image temp = new Model_Image();
+			temp.path = pathsave;						
 
-			String send = image.encodeImage();//String image buffer -> byte[] - >string
+			String send = temp.encodeImage();//String image buffer -> byte[] - >string
 			this.write_to_client(send);
 			this.write_to_client(extension);
 			this.write_to_client("end");//Ký hiệu hết giữa client-server
@@ -751,6 +766,7 @@ public class Controller_Server_SearchPhim implements Runnable{
 			delete.delete();
 			outputfile.deleteOnExit();
 			outputfile.delete();
+			lib.close();
 		} catch (IOException e) {
 			this.write_to_client("fail_input");
 		}
@@ -764,8 +780,8 @@ public class Controller_Server_SearchPhim implements Runnable{
 
 	@Override
 	public void run() {
-		
-		
+		int a = (int)Math.random()*100+1;		
+		this.Open_Server(a);		
 	}
 	
 	public void start() {

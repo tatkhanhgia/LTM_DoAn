@@ -7,6 +7,7 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
 import controll.Controller_Client_SearchPhim;
+import controll.ServerMain;
 import de.javasoft.synthetica.dark.SyntheticaDarkLookAndFeel;
 import java.awt.Color;
 import java.awt.Cursor;
