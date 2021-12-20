@@ -323,11 +323,19 @@ public class Controller_Server_SearchPhim implements Runnable{
 				return;
 			}
 		}
-		API.getPosterImage(phim);
-		API.getReviewOfMovie(phim);
-		API.getActorOfMovie(phim);
-		API.getKeyOfTrailer(phim);
-		API.getDetailOfMovie(phim);
+		if ( type.equals("popular"))
+		{
+			boolean a = API.getPopularMovie();
+			if ( !a) {
+				this.write_to_client("result_fail");
+				return;
+			}
+		}
+		API.getPosterImage();
+		API.getReviewOfMovie();
+		API.getActorOfMovie();
+		API.getKeyOfTrailer();
+		API.getDetailOfMovie();
 		
 		//
 		for(int i=0;i<API.arraymovie.size();i++)

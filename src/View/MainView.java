@@ -73,7 +73,7 @@ public class MainView extends JFrame {
 		if(controller == null)
 		{
 			controller = new Controller_Client_SearchPhim();
-			controller.Open_Client("localhost", 6000);			
+			controller.Open_Client("localhost", 6000);
 		}
 		setResizable(false);
 		setTitle("ỨNG DỤNG SEARCH PHIM & XỬ LÝ ẢNH");

@@ -142,6 +142,7 @@ public class ListFrame extends JFrame {
 		QuayLai(this);
 		Click(this);
 		CloseFrame(this);
+		Popular(this);
 	}
 	
 	//Sử dụng để quay lại listframe đã tồn tại phim tìm trước đó
@@ -325,4 +326,53 @@ public class ListFrame extends JFrame {
 		});
 	}
 	
+	//Sử dụng để hiển thị popular movie
+	public void Popular(JFrame a) {
+		//Lấy tên phim					
+		MainView.controller.send_text("data;popular");
+		System.out.println("Gửi popularmovie sang server");
+		try {
+			String result = MainView.controller.Receiver();//đợi
+			if(result.equals("fail_input"))
+			{
+				JOptionPane.showMessageDialog(null, "Lỗi nhập! Vui lòng không nhập chữ cái + kí tự lạ!","Lỗi nhập liệu",JOptionPane.CANCEL_OPTION);
+				return;
+			}
+			if(result.equals("fail_search"))
+			{
+				JOptionPane.showMessageDialog(null, "Không tìm thấy tên phim","Lỗi",JOptionPane.CANCEL_OPTION);
+				model = new DefaultTableModel(header, 0);
+				table.setModel(model);
+				return;
+			}					
+			ArrayList<Model_Movie> array = MainView.controller.listmovie;
+			//UPLOAD lên table
+			if (model.getRowCount() == 0) {                         //KHÔNG CHO NGDUNG CHỈNH SỬA TRÊN TABLE
+                model = new DefaultTableModel(header, 0)
+                {       @Override
+                         public boolean isCellEditable(int i, int i1) {
+                         return false;
+                        }
+                };
+            }
+			for(int i=0;i<array.size();i++){
+                Vector row = new Vector();
+                Model_Movie movie=array.get(i);
+                row.add(movie.getId());
+                row.add(movie.getTitle());
+                row.add(movie.getOverview());
+                row.add(movie.getCrew_ToString());
+                row.add(movie.getCast_ToString());
+                row.add(movie.getVote_av());
+                model.addRow(row);
+			}
+			table.setModel(model);
+			table.getColumnModel().getColumn(0).setPreferredWidth(30);
+			table.getColumnModel().getColumn(5).setPreferredWidth(30);
+			table.getColumnModel().getColumn(4).setPreferredWidth(70);
+			table.getColumnModel().getColumn(3).setPreferredWidth(50);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
 }

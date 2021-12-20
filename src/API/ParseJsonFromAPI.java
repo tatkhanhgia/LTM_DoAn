@@ -168,7 +168,7 @@ public class ParseJsonFromAPI {
     }
 
 //    some movies don't have poster image
-    public ArrayList<Image> getPosterImage(String nameOfMovie) {
+    public ArrayList<Image> getPosterImage() {
         ArrayList<Image> resultAll = new ArrayList<Image>();                	
             ArrayList<String> posterPath = new ArrayList<String>();
             for(int i = 0; i < arraymovie.size();i++) {
@@ -195,7 +195,7 @@ public class ParseJsonFromAPI {
     }
 
 //    Get review list of movie
-    public ArrayList<String> getReviewOfMovie(String nameOfMovie) {
+    public ArrayList<String> getReviewOfMovie() {
         ArrayList<String> resultAll = new ArrayList<String>();
         HttpURLConnection connection = null;
         try {
@@ -276,7 +276,7 @@ public class ParseJsonFromAPI {
 
 //    Get video trailer list of movie
 //    https://www.youtube.com/watch?v= + keyOfTrailer
-    public ArrayList<String> getKeyOfTrailer(String nameOfMovie) {
+    public ArrayList<String> getKeyOfTrailer() {
         ArrayList<String> resultAll = new ArrayList<String>();
         HttpURLConnection connection = null;
         try {
@@ -352,7 +352,7 @@ public class ParseJsonFromAPI {
         HttpURLConnection connection = null;
         try {
             ArrayList<String> keyOfTrailer = new ArrayList<String>();
-            keyOfTrailer = getKeyOfTrailer(nameOfMovie);
+            keyOfTrailer = getKeyOfTrailer();
             for (int i = 0; i < keyOfTrailer.size(); i += 2) {
                 String key = keyOfTrailer.get(i).toString();
                 String url = "https://www.youtube.com/watch?v=" + key;
@@ -372,7 +372,7 @@ public class ParseJsonFromAPI {
         HttpURLConnection connection = null;
         try {
             ArrayList<String> keyOfTrailer = new ArrayList<String>();
-            keyOfTrailer = getKeyOfTrailer(nameOfMovie);
+            keyOfTrailer = getKeyOfTrailer();
             for (int i = 0; i < keyOfTrailer.size(); i += 2) {
                 String key = keyOfTrailer.get(i).toString();
                 String url = "https://www.youtube.com/watch?v=" + key;
@@ -495,7 +495,7 @@ public class ParseJsonFromAPI {
         }        
     }
     
-    public ArrayList<String> getPopularMovie() {
+    public boolean getPopularMovie() {
         ArrayList<String> resultAll = new ArrayList<String>();
         HttpURLConnection connection = null;
         try {
@@ -518,23 +518,24 @@ public class ParseJsonFromAPI {
             String result = response.toString();
             JSONObject object = new JSONObject(result);
 
+            arraymovie = new ArrayList<>();
             JSONArray results = object.getJSONArray("results");
             for (int i = 0; i < results.length(); i++) {
                 JSONObject childOfResults = results.getJSONObject(i);
-                String id = childOfResults.getString("id");
-                String title = childOfResults.getString("title");
-                String overview = childOfResults.getString("overview");
-                String release_date = childOfResults.getString("release_date");
-                String original_language = childOfResults.getString("original_language");
-                String popularity = childOfResults.getString("popularity");
-                String vote_average = childOfResults.getString("vote_average");
-                String vote_count = childOfResults.getString("vote_count");
+//                String id = childOfResults.getString("id");
+//                String title = childOfResults.getString("title");
+//                String overview = childOfResults.getString("overview");
+//                String release_date = childOfResults.getString("release_date");
+//                String original_language = childOfResults.getString("original_language");
+//                String popularity = childOfResults.getString("popularity");
+//                String vote_average = childOfResults.getString("vote_average");
+//                String vote_count = childOfResults.getString("vote_count");
+//
+//                String backdrop_path = childOfResults.getString("backdrop_path");
+//                String poster_path = childOfResults.getString("poster_path");
 
-                String backdrop_path = childOfResults.getString("backdrop_path");
-                String poster_path = childOfResults.getString("poster_path");
-
-                resultAll.add(id);
-                resultAll.add(title);
+//                resultAll.add(id);
+//                resultAll.add(title);
 //                resultAll.add(overview);
 //                resultAll.add(release_date);
 //                resultAll.add(original_language);
@@ -543,6 +544,60 @@ public class ParseJsonFromAPI {
 //                resultAll.add(vote_count);
 //                resultAll.add(backdrop_path);
 //                resultAll.add(poster_path);
+                String id ;
+                if(	childOfResults.isNull("id"))
+                	id = "Không có dữ liệu";
+                else
+                	id = childOfResults.getString("id");
+                //Get Title
+                String title;
+                if(childOfResults.isNull("title"))
+                	title = "Không có dữ liệu";
+                else
+                	title =childOfResults.getString("title");
+                //Get mô tả
+                String overview;
+                if(childOfResults.isNull("overview"))
+                	overview = "Không có dữ liệu";
+                else
+                	overview = childOfResults.getString("overview");
+                //Get ngày ra mắt
+                String release_date;
+                if(childOfResults.isNull("release_date"))
+					release_date = "Không có dữ liệu";
+				else
+					release_date = childOfResults.getString("release_date");
+                //Get ngôn ngữ
+                String original_language;
+                if(childOfResults.isNull("original_language"))
+                	original_language = "Không có dữ liệu";
+                else
+                	original_language =childOfResults.getString("original_language");
+                //Get popularity                
+                String popularity;
+                if(childOfResults.isNull("popularity"))
+                	popularity = "Không có dữ liệu";
+                else
+                	popularity =childOfResults.getString("popularity");
+                //Get vote trung binhf                
+                String vote_average;
+                if(childOfResults.isNull("vote_average"))
+                	vote_average = "0";
+                else
+                	vote_average =childOfResults.getString("vote_average");
+                //Get vote count                
+                String vote_count;
+                if(childOfResults.isNull("vote_count"))
+                	vote_count = "0";
+                else
+                	vote_count =childOfResults.getString("vote_count");
+//                get backdrop and poster image
+                String backdrop_path = childOfResults.getString("backdrop_path");
+                String poster_path = childOfResults.getString("poster_path");
+
+                Model_Movie temp = new Model_Movie(id,title,overview,release_date,original_language
+                						, popularity,vote_average,vote_count,backdrop_path,poster_path);
+                arraymovie.add(temp);
             }
             reader.close();
         }
@@ -555,11 +610,11 @@ public class ParseJsonFromAPI {
         catch (IOException e) {
             System.err.println(e.getMessage());
         }
-        return resultAll;
+        return true;
     }
 
     //Dùng để get thể loại -Genres
-    public ArrayList<String> getDetailOfMovie(String nameOfMovie) {
+    public ArrayList<String> getDetailOfMovie() {
         ArrayList<String> resultAll = new ArrayList<String>();
         HttpURLConnection connection = null;
         try {
@@ -729,7 +784,7 @@ public class ParseJsonFromAPI {
         HttpURLConnection connection = null;
         try {
             ArrayList<String> screenshotPath = new ArrayList<String>();
-            screenshotPath = getDetailOfMovie(nameOfMovie);
+            screenshotPath = getDetailOfMovie();
 
 //            change for loop
             for (int i = 0; i < 1; i += 2) {
@@ -748,7 +803,7 @@ public class ParseJsonFromAPI {
         return resultAll;
     }
 
-    public ArrayList<String> getActorOfMovie(String nameOfMovie) {
+    public ArrayList<String> getActorOfMovie() {
         ArrayList<String> resultAll = new ArrayList<String>();
         HttpURLConnection connection = null;
         try {
@@ -873,7 +928,7 @@ public class ParseJsonFromAPI {
         HttpURLConnection connection = null;
         try {
             ArrayList<String> portraitPath = new ArrayList<String>();
-            portraitPath = getActorOfMovie(nameOfMovie);
+            portraitPath = getActorOfMovie();
 
 //            change for loop
             for (int i = 1; i < portraitPath.size(); i += 2) {
@@ -1192,10 +1247,10 @@ public class ParseJsonFromAPI {
        //System.out.println(p.removeAccent("xin chào đồng chí hé lô , mắt biếc"));
         //p.searchByName("Your Name");    
        p.searchByPeople("Tom Holland");
-		p.getPosterImage("Tom Holland");
-		p.getReviewOfMovie("Tom Holland");
-		p.getActorOfMovie("Tom Holland");
-		p.getDetailOfMovie("Tom Holland");
+		p.getPosterImage();
+		p.getReviewOfMovie();
+		p.getActorOfMovie();
+		p.getDetailOfMovie();
 //        int i = 0;
 //        for(;i<p.arraymovie.size();i++)
 //        {
